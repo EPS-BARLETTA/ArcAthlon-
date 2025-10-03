@@ -105,6 +105,15 @@
  .sumchip.bad{background:rgba(239,68,68,.12); color:#7f1d1d}
  .sumchip.total{background:#eef2f7}
  .sumchip.indice{background:rgba(10,88,255,.10); color:#0a58ff}
+ .sumchip.chip10{background:rgba(34,197,94,.12); color:#14532d}
+ .sumchip.chip9{background:rgba(16,185,129,.12); color:#065f46}
+ .sumchip.chip8{background:rgba(59,130,246,.12); color:#1e3a8a}
+ .sumchip.chip7{background:rgba(245,158,11,.15); color:#7c2d12}
+ .sumchip.chip6{background:rgba(244,63,94,.10); color:#9f1239}
+ /* Résumé bilan (overlay) + chip 0 */
+ #summaryOverlay{position:fixed; inset:0; display:none; z-index:60; align-items:center; justify-content:center; background:rgba(2,6,23,.55);}
+ #summaryOverlay.show{display:flex;}
+ .sumchip.chip0{background:rgba(239,68,68,.12); color:#7f1d1d}
 </style>
 </head>
 <body>
@@ -292,11 +301,14 @@
            <button class="b-slate" data-score="10">10</button>
          </div>
 
-         <!-- Résumé immédiat sous saisie -->
+         <!-- Résumé immédiat sous saisie (version: 10..6 + indice) -->
          <div class="summaryBox" id="shootSummary">
-           <span class="sumchip good">Réussites (≥6) : <b id="succ">0</b></span>
-           <span class="sumchip bad">Échecs (0) : <b id="fail">0</b></span>
-           <span class="sumchip total">Total tir : <b id="sumScore">0</b> pts</span>
+           <span class="sumchip chip10">Nb 10 : <b id="c10">0</b></span>
+           <span class="sumchip chip9">Nb 9 : <b id="c9">0</b></span>
+           <span class="sumchip chip8">Nb 8 : <b id="c8">0</b></span>
+           <span class="sumchip chip7">Nb 7 : <b id="c7">0</b></span>
+           <span class="sumchip chip6">Nb 6 : <b id="c6">0</b></span>
+           <span class="sumchip chip0">Nb 0 : <b id="c0">0</b></span>
            <span class="sumchip indice">Indice arc : <b id="indiceArc">0</b>%</span>
          </div>
 
@@ -307,13 +319,7 @@
              <tbody id="shotsTable"></tbody>
            </table>
          </div>
-         <p class="muted" style="margin-top:8px">
-           <span class="pill">Nb 10 : <b id="c10">0</b></span>
-           <span class="pill">Nb 9 : <b id="c9">0</b></span>
-           <span class="pill">Nb 8 : <b id="c8">0</b></span>
-           <span class="pill">Nb 7 : <b id="c7">0</b></span>
-           <span class="pill">Nb 6 : <b id="c6">0</b></span>
-         </p>
+
        </div>
      </div>
 
@@ -350,6 +356,18 @@
      <p class="end-note" id="distanceOutOverlay">Distance: — m</p>
      <div class="btns" style="margin-top:8px">
        <button class="b-green" id="finishRunnerOverlay">✅ Terminer la course</button>
+     </div>
+   </div>
+ </div>
+
+ <!-- Overlay bilan prêt -->
+ <div id="summaryOverlay" aria-modal="true" role="dialog">
+   <div class="end-card">
+     <h3>📊 Bilan prêt</h3>
+     <p class="muted">Les deux coureurs sont terminés. Générer le QR/CSV ?</p>
+     <div class="btns" style="margin-top:8px">
+       <button class="b-primary" id="overlayGoSummary">📊 Accéder au bilan</button>
+       <button class="b-slate" id="overlayCloseSummary">⬅ Retour</button>
      </div>
    </div>
  </div>
@@ -468,9 +486,8 @@
  const endCard=qs('#endCard'), distanceOut=qs('#distanceOut'), courseCard=qs('#courseCard');
  const toSummaryWrap=qs('#toSummaryWrap'); const liveDistanceEl=qs('#liveDistance');
  const allowedEl=qs('#allowed'), shotCountEl=qs('#shotCount'), remainEl=qs('#remain');
- const sumScoreEl=qs('#sumScore'), indiceArcEl=qs('#indiceArc');
- const c6El=qs('#c6'), c7El=qs('#c7'), c8El=qs('#c8'), c9El=qs('#c9'), c10El=qs('#c10');
- const succEl=qs('#succ'), failEl=qs('#fail');
+ const indiceArcEl=qs('#indiceArc');
+ const c0El=qs('#c0'), c6El=qs('#c6'), c7El=qs('#c7'), c8El=qs('#c8'), c9El=qs('#c9'), c10El=qs('#c10');
 
  // Choix coureur
  qs('#pickP1').onclick=()=> switchRunner('p1');
@@ -524,9 +541,16 @@
  });
  document.getElementById('finishRunnerOverlay').onclick=()=> finalizeRunner();
 
+ // Overlay bilan prêt
+ const summaryOverlay = document.getElementById('summaryOverlay');
+ function showSummaryOverlay(){ summaryOverlay.classList.add('show'); if(navigator.vibrate) navigator.vibrate(120); }
+ function hideSummaryOverlay(){ summaryOverlay.classList.remove('show'); }
+ document.getElementById('overlayGoSummary').onclick=()=>{ hideSummaryOverlay(); document.getElementById('goSummary').click(); };
+ document.getElementById('overlayCloseSummary').onclick=()=> hideSummaryOverlay();
+
  // Panneau bas (mêmes actions)
  endCard.querySelectorAll('[data-frac]').forEach(b=> b.onclick=()=>{ if(session.finished) return; session.frac=+b.getAttribute('data-frac'); updateDistanceOutput(); updateDistanceOutputOverlay(); });
- qs('#finishRunner').onclick=()=> finalizeRunner();
+ qs('#finishRunner').onclick=()=> { showEnd(); };
 
  function updateDistanceOutput(){
    const meters=Math.round((session.laps+(session.frac||0))*session.tourM);
@@ -582,11 +606,8 @@
  }
  function renderAllSummaries(){
    const c=scoreCounts();
+   c0El.textContent=c[0];
    c6El.textContent=c[6]; c7El.textContent=c[7]; c8El.textContent=c[8]; c9El.textContent=c[9]; c10El.textContent=c[10];
-   const succ = c[6]+c[7]+c[8]+c[9]+c[10];
-   const fail = c[0];
-   succEl.textContent = succ; failEl.textContent = fail;
-   sumScoreEl.textContent = sumScores();
    indiceArcEl.textContent = computeIndiceArc();
  }
 
@@ -638,6 +659,7 @@
    document.getElementById('pickP1').disabled=true;
    document.getElementById('pickP2').disabled=true;
    toSummaryWrap.classList.remove('hidden');
+   showSummaryOverlay();
  }
 
  // ===== Bilan / QR + MODE PROF =====
