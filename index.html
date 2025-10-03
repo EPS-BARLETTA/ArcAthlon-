@@ -1,210 +1,712 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcul de VMA</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-            max-width: 600px;
-            margin: auto;
-        }
-        input, button {
-            font-size: 18px;
-            margin: 10px 0;
-            padding: 10px;
-            width: 100%;
-            max-width: 200px;
-        }
-        button {
-            cursor: pointer;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 100px;
-            height: 100px;
-            margin: 5px;
-        }
-        .btn-start { background-color: #4CAF50; }
-        .btn-plot { background-color: #2196F3; }
-        .btn-download { background-color: #FF9800; display: none; }
-        .btn-reset { background-color: #f44336; display: none; }
-        .input-row {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        .info-box {
-            border: 2px solid green;
-            padding: 10px;
-            margin: 20px 0;
-            font-weight: bold;
-            color: green;
-        }
-        .results, #finalSummary {
-            margin-top: 20px;
-            font-size: 16px;
-        }
-        #resultsLog {
-            margin: 10px 0;
-        }
-        label { display: block; margin-top: 10px; }
-        .button-container {
-            display: flex;
-            justify-content: space-around;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Arcathlon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+ :root{
+   --bg:#f4f7fb; --card:#ffffff; --ink:#111827; --muted:#6b7280; --primary:#0a58ff;
+   --green:#22c55e; --amber:#f59e0b; --red:#ef4444; --violet:#7c3aed; --slate:#334155;
+   --radius:16px; --ring:0 8px 40px rgba(2,6,23,.08);
+   --panel1:#e8f1ff; --panel2:#e9fbe8; --band:#eef2f7;
+ }
+ *{box-sizing:border-box}
+ body{
+   margin:0;background:var(--bg);color:var(--ink);
+   font:16px/1.4 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+   min-height:100vh; display:flex; flex-direction:column; padding-bottom:56px;
+ }
+ footer{
+   position:fixed; left:0; right:0; bottom:0;
+   border-top:1px solid #e5e7eb; color:var(--muted);
+   text-align:center; padding:10px 0; background:#fff;
+ }
+ .shell{max-width:980px;margin:0 auto;padding:16px}
+ h1{font-size:clamp(22px,3.4vw,32px);margin:8px 0 4px;font-weight:800;text-align:center}
+ h2{font-size:clamp(20px,2.8vw,28px);margin:8px 0 12px;font-weight:800;text-align:center}
+ h3{margin:0 0 10px;font-size:18px;text-align:center}
+ p{margin:0 0 8px;text-align:center}
+ .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--ring);padding:16px;margin:12px 0}
+ .btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+ button{border:0;border-radius:16px;padding:14px 18px;font-weight:800;cursor:pointer;font-size:18px}
+ .b-primary{background:var(--primary);color:#fff}
+ .b-green{background:var(--green);color:#fff}
+ .b-amber{background:var(--amber);color:#111}
+ .b-red{background:var(--red);color:#fff}
+ .b-violet{background:var(--violet);color:#fff}
+ .b-slate{background:var(--slate);color:#fff}
+ .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+ .panel{border-radius:16px;padding:16px}
+ .panel1{background:var(--panel1)}
+ .panel2{background:var(--panel2)}
+ .band{background:var(--band);border-radius:12px;padding:10px 12px;margin-top:16px;font-weight:700}
+ label{display:block;font-weight:800;margin:10px 0 6px}
+ input,select{width:100%;padding:14px 16px;border:2px solid #e5e7eb;border-radius:14px;background:#fff;font:inherit}
+ input[type=number]{appearance:textfield}
+ select{background:#fff}
+ .muted{color:var(--muted)}
+ .hidden{display:none!important}
+ .center{text-align:center}
+ .big{font-size:40px;font-weight:900}
+ .xl{font-size:60px;font-weight:900}
+ .pill{display:inline-block;padding:6px 12px;border-radius:999px;background:#eef2f7}
+ table{width:100%;border-collapse:collapse}
+ th,td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:16px}
+ .lock *{pointer-events:none; opacity:.7}
+ .shot-grid{display:grid;grid-template-columns:repeat(11,1fr);gap:8px;margin-top:8px}
+
+ #view-cover{min-height:calc(100vh - 56px); display:flex; align-items:center; justify-content:center;}
+ .cover-stack{display:flex; flex-direction:column; gap:16px; align-items:center;}
+ .substack{display:flex; gap:12px; flex-wrap:wrap; justify-content:center;}
+ .tagline{color:var(--muted)}
+
+ .modal{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:50;
+   background:linear-gradient(180deg,rgba(2,6,23,.55),rgba(2,6,23,.35));}
+ .modal-card{background:#fff; border-radius:20px; max-width:900px; width:92%; overflow:hidden; box-shadow:0 12px 48px rgba(2,6,23,.25)}
+ .modal-head{display:flex; align-items:center; gap:12px; padding:16px 18px; color:#fff; font-weight:800}
+ .modal-head.help{background:linear-gradient(90deg,#0a58ff,#7c3aed)}
+ .modal-head.safe{background:linear-gradient(90deg,#22c55e,#0ea5e9)}
+ .modal-head.indice{background:linear-gradient(90deg,#111827,#0a58ff)}
+ .modal-body{padding:18px}
+ .modal-body h4{margin:12px 0 6px}
+ .help-list{margin:8px 0 12px; line-height:1.55}
+ .help-list li{margin:6px 0}
+
+ /* Overlay fin (comme LaserRun) */
+ #endOverlay{
+   position:fixed; inset:0; display:none; z-index:60;
+   align-items:center; justify-content:center;
+   background:rgba(2,6,23,.55);
+ }
+ #endOverlay.show{display:flex;}
+ .end-card{
+   background:#fff; border-radius:20px; padding:20px; width:min(720px,92%);
+   box-shadow:0 12px 48px rgba(2,6,23,.25); text-align:center;
+ }
+ .end-card h3{margin-top:0}
+ .end-note{color:var(--muted); margin-top:8px}
+</style>
 </head>
 <body>
+ <!-- ===== Accueil ===== -->
+ <main class="shell" id="view-cover">
+   <section class="card center" style="padding:28px 20px">
+     <div class="cover-stack">
+       <div>
+         <h1>Arcathlon</h1>
+         <p class="tagline">Course ↔ Tir à l’arc par blocs de 3 tours — compatible ScanProf</p>
+       </div>
+       <div class="btns" style="margin-top:12px">
+         <button class="b-primary" id="btnStart">▶️ Démarrer</button>
+       </div>
+       <div class="substack">
+         <button class="b-slate" id="btnHelp">ℹ️ Aide</button>
+         <button class="b-amber" id="btnSafety">🛟 Fiche sécurité</button>
+       </div>
+     </div>
+   </section>
+ </main>
 
-    <h1>Calcul de la VMA</h1>
+ <!-- ===== Modale Aide ===== -->
+ <div class="modal hidden" id="modalHelp">
+   <div class="modal-card">
+     <div class="modal-head help"><span>ℹ️</span><span>Mode d’emploi — Arcathlon</span></div>
+     <div class="modal-body">
+       <ol class="help-list">
+         <li>Renseigner pour chaque coureur : <strong>Prénom</strong>, <strong>Nom</strong>, <strong>Classe</strong>, <strong>Sexe</strong>.</li>
+         <li>Paramètres : <strong>Durée (min)</strong> et <strong>Longueur du tour (m)</strong>.</li>
+         <li>En course : <strong>Start/Pause</strong> le chrono ; <strong>+1 / −1</strong> pour les tours.</li>
+         <li><strong>Tir débloqué chaque bloc de 3 tours</strong> : 3 flèches autorisées par bloc (scores 0–10).</li>
+         <li>Fin du temps : compléter la <strong>fraction de tour</strong>, terminer, puis générer <strong>QR</strong> et <strong>CSV</strong>.</li>
+       </ol>
+       <div class="btns"><button class="b-slate" data-close>Fermer</button></div>
+     </div>
+   </div>
+ </div>
 
-    <input type="text" id="runnerName" placeholder="Nom du coureur" required>
-    <input type="text" id="observerName" placeholder="Nom de l'observateur" required>
+ <!-- ===== Modale Fiche sécurité (résumé) ===== -->
+ <div class="modal hidden" id="modalSafety">
+   <div class="modal-card">
+     <div class="modal-head safe"><span>🛟</span><span>Fiche sécurité — Arcathlon</span></div>
+     <div class="modal-body">
+       <h4>Zone de tir</h4>
+       <ul class="help-list">
+         <li>Arc toujours dirigé vers la cible ; pas de tir strict ; on récupère les flèches sur signal.</li>
+         <li>Un seul plan de tir, archers alignés, personne devant la ligne.</li>
+       </ul>
+       <h4>Course</h4>
+       <ul class="help-list">
+         <li>Gestion des croisements course ↔ tir, pas de bousculade.</li>
+       </ul>
+       <div class="btns"><button class="b-slate" data-close>Fermer</button></div>
+     </div>
+   </div>
+ </div>
 
-    <div class="input-row">
-        <div>
-            <label for="runnerVMA">VMA du coureur (km/h) :</label>
-            <input type="number" id="runnerVMA" placeholder="VMA du coureur" required step="0.5">
-        </div>
-        <div>
-            <label for="targetPercentage">Pourcentage de la VMA cible (%) :</label>
-            <input type="number" id="targetPercentage" placeholder="Ex: 50" required step="0.5">
-        </div>
-    </div>
+ <!-- ===== Saisie 2 coureurs ===== -->
+ <main class="shell hidden" id="view-duo">
+   <section class="card">
+     <h2>Saisie des informations</h2>
+     <p class="muted">Identité des deux coureurs + paramètres communs.</p>
+     <div class="row">
+       <div class="panel panel1">
+         <h3>COUREUR 1</h3>
+         <label>Prénom</label><input id="p1_prenom" maxlength="60" autocomplete="off"/>
+         <label>Nom</label><input id="p1_nom" maxlength="60" autocomplete="off"/>
+         <label>Classe</label><input id="p1_classe" maxlength="60" autocomplete="off"/>
+         <label>Sexe</label>
+         <select id="p1_sexe"><option value="">—</option><option>F</option><option>M</option></select>
+       </div>
+       <div class="panel panel2">
+         <h3>COUREUR 2</h3>
+         <label>Prénom</label><input id="p2_prenom" maxlength="60" autocomplete="off"/>
+         <label>Nom</label><input id="p2_nom" maxlength="60" autocomplete="off"/>
+         <label>Classe</label><input id="p2_classe" maxlength="60" autocomplete="off"/>
+         <label>Sexe</label>
+         <select id="p2_sexe"><option value="">—</option><option>F</option><option>M</option></select>
+       </div>
+     </div>
 
-    <label for="duration">Durée de la course (en minutes, multiples de 1:30) :</label>
-    <input type="number" id="duration" min="1.5" step="1.5" value="3">
+     <div class="band">Paramètres (communs)</div>
+     <div class="row">
+       <div>
+         <label>Durée (minutes)</label>
+         <input id="duree_min" type="number" inputmode="numeric" min="1" step="1" placeholder="ex. 20"/>
+       </div>
+       <div>
+         <label>Longueur d'un tour (m)</label>
+         <input id="tour_m" type="number" inputmode="numeric" min="10" step="1" placeholder="ex. 200"/>
+       </div>
+     </div>
 
-    <div id="infoBox" class="info-box" style="display:none;"></div>
+     <div class="btns" style="margin-top:18px">
+       <button class="b-primary" id="goCourse" disabled>Accéder à la course</button>
+       <button class="b-slate" id="goHome">🏠 Accueil</button>
+     </div>
+   </section>
+ </main>
 
-    <div class="button-container">
-        <button class="btn-start" onclick="startRace()">Démarrer</button>
-        <button class="btn-plot" onclick="addPlot()">Passer un plot</button>
-    </div>
+ <!-- ===== Course + Tir en boucles ===== -->
+ <main class="shell hidden" id="view-course">
+   <section class="card center" id="courseCard">
+     <div class="btns" style="margin-bottom:8px">
+       <button class="b-slate" id="backToDuo">⬅ Retour saisie</button>
+       <span class="pill" id="courseMeta">—</span>
+     </div>
+     <h2 id="runnerTitle">Coureur — </h2>
+     <div class="btns" style="margin-bottom:6px">
+       <button class="b-green" id="pickP1">👟 Coureur 1</button>
+       <button class="b-green" id="pickP2">👟 Coureur 2</button>
+     </div>
 
-    <div id="controlSection" style="display:none;">
-        <button class="btn-download" onclick="downloadResults()">Télécharger</button>
-        <button class="btn-reset" onclick="reset()">Réinitialiser</button>
+     <!-- Chrono -->
+     <div class="card" style="max-width:720px;margin:0 auto 12px">
+       <div class="xl" id="clock">00:00.0</div>
+       <div class="btns" style="margin-top:8px">
+         <button class="b-primary" id="btnStartCourse">▶️ Start</button>
+         <button class="b-amber" id="btnPause" disabled>⏸️ Pause</button>
+         <button class="b-red" id="btnReset" disabled>↺ Réinit.</button>
+       </div>
+       <p class="muted">Durée cible : <strong id="target"></strong> min</p>
+     </div>
 
-        <p>Temps écoulé : <span id="timeElapsed">0:00</span></p>
-        <p>Plots passés : <span id="plotCount">0</span></p>
-        <div id="resultsLog"></div>
-        <div id="finalSummary" style="display:none;"></div>
-    </div>
+     <!-- Tours + Tir -->
+     <div class="row" style="max-width:720px;margin:0 auto">
+       <div class="card">
+         <h3>🏁 Tours</h3>
+         <div class="big" id="laps">0</div>
+         <p class="muted">1 tour = <span id="lapMeters">—</span> m</p>
+         <p class="muted"><strong>Distance provisoire :</strong> <span id="liveDistance">0</span> m</p>
+         <div class="btns">
+           <button class="b-green" id="lapPlus">+1 tour</button>
+           <button class="b-slate" id="lapMinus">−1</button>
+         </div>
+       </div>
+       <div class="card">
+         <h3>🏹 Tir à l’arc (0–10)</h3>
+         <p class="muted">
+           Flèches autorisées : <b id="allowed">0</b> — Tirées : <b id="shotCount">0</b> — Restantes : <b id="remain">0</b>
+         </p>
+         <div class="shot-grid" id="scoreButtons">
+           <!-- 0..10 -->
+           <button class="b-slate" data-score="0">0</button>
+           <button class="b-slate" data-score="1">1</button>
+           <button class="b-slate" data-score="2">2</button>
+           <button class="b-slate" data-score="3">3</button>
+           <button class="b-slate" data-score="4">4</button>
+           <button class="b-slate" data-score="5">5</button>
+           <button class="b-slate" data-score="6">6</button>
+           <button class="b-slate" data-score="7">7</button>
+           <button class="b-slate" data-score="8">8</button>
+           <button class="b-slate" data-score="9">9</button>
+           <button class="b-slate" data-score="10">10</button>
+         </div>
+         <div style="overflow:auto;margin-top:8px">
+           <table>
+             <thead><tr><th>#</th><th>Score</th><th>Action</th></tr></thead>
+             <tbody id="shotsTable"></tbody>
+           </table>
+         </div>
+         <p class="muted" style="margin-top:8px">
+           <strong>Total tir :</strong> <span id="sumScore">0</span> pts — <strong>Indice arc :</strong> <span id="indiceArc">0</span>%
+         </p>
+       </div>
+     </div>
 
-    <script>
-        let duration, interval, timeElapsed = 0, plotCount = 0, results = [];
+     <!-- Panneau fin + overlay -->
+     <div class="card hidden" id="endCard" style="max-width:720px;margin:12px auto 0">
+       <h3>⏱️ Temps écoulé — compléter la fraction de tour</h3>
+       <div class="btns">
+         <button class="b-slate" data-frac="0">+ 0</button>
+         <button class="b-slate" data-frac="0.25">+ 1/4</button>
+         <button class="b-slate" data-frac="0.5">+ 1/2</button>
+         <button class="b-slate" data-frac="0.75">+ 3/4</button>
+         <button class="b-green" id="finishRunner">✅ Terminer la course</button>
+       </div>
+       <p class="muted" id="distanceOut">Distance: — m</p>
+     </div>
 
-        function startRace() {
-            const runnerName = document.getElementById("runnerName").value;
-            const observerName = document.getElementById("observerName").value;
-            const runnerVMA = parseFloat(document.getElementById("runnerVMA").value);
-            const targetPercentage = parseFloat(document.getElementById("targetPercentage").value);
+     <div class="btns hidden" id="toSummaryWrap" style="margin-top:12px">
+       <button class="b-primary" id="goSummary">📊 Aller au bilan</button>
+     </div>
+   </section>
+ </main>
 
-            if (!runnerName || !observerName || isNaN(runnerVMA) || isNaN(targetPercentage)) {
-                alert("Veuillez remplir toutes les informations avant de démarrer la course.");
-                return;
-            }
+ <!-- Overlay fin -->
+ <div id="endOverlay" aria-modal="true" role="dialog">
+   <div class="end-card">
+     <h3>⏳ Temps écoulé</h3>
+     <p class="muted">Compléter la fraction de tour si besoin, puis valider la course.</p>
+     <div class="btns" style="margin:10px 0 4px">
+       <button class="b-slate" data-frac-overlay="0">+ 0</button>
+       <button class="b-slate" data-frac-overlay="0.25">+ 1/4</button>
+       <button class="b-slate" data-frac-overlay="0.5">+ 1/2</button>
+       <button class="b-slate" data-frac-overlay="0.75">+ 3/4</button>
+     </div>
+     <p class="end-note" id="distanceOutOverlay">Distance: — m</p>
+     <div class="btns" style="margin-top:8px">
+       <button class="b-green" id="finishRunnerOverlay">✅ Terminer la course</button>
+     </div>
+   </div>
+ </div>
 
-            duration = parseFloat(document.getElementById("duration").value) * 60; // Durée en secondes
-            plotCount = 0;
-            results = [`Coureur : ${runnerName}, Observateur : ${observerName}`];
-            timeElapsed = 0;
+ <!-- ===== Bilan / QR ===== -->
+ <main class="shell hidden" id="view-summary">
+   <section class="card center">
+     <h2>Bilan — QR compatible ScanProf</h2>
+     <div id="qr" class="card" style="display:inline-block"></div>
 
-            const targetVMA = runnerVMA * (targetPercentage / 100); // VMA à 50%
-            const expectedPlots = Math.round(targetVMA * 2);  // Nombre de plots à passer
+     <div class="card prof-tools">
+       <div class="prof-row" style="display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap">
+         <input id="profCode" type="password" inputmode="numeric" placeholder="Entrer code Prof (57)"/>
+         <button class="b-slate" id="activateProf">🔓 Activer mode Prof</button>
+         <button class="b-amber" id="deactivateProf" disabled>🔒 Désactiver</button>
+         <button class="b-violet" id="applyEdits" disabled>💾 Mettre à jour QR/CSV</button>
+         <button class="b-violet" id="exportCsv">⬇️ Export CSV</button>
+       </div>
+       <p class="muted" id="profHint" style="margin-top:8px"></p>
+     </div>
 
-            document.getElementById("infoBox").style.display = "block";
-            document.getElementById("infoBox").textContent = `À ${targetPercentage}% de la VMA (${targetVMA.toFixed(2)} km/h), le coureur doit passer ${expectedPlots} plots par 1:30.`;
-            document.getElementById("controlSection").style.display = "block";
-            document.getElementById("plotCount").textContent = plotCount;
-            document.getElementById("timeElapsed").textContent = formatTime(0);
-            document.getElementById("resultsLog").innerHTML = "";
-            document.getElementById("finalSummary").style.display = "none";
+     <div id="resume"></div>
 
-            interval = setInterval(updateTime, 1000);
-        }
+     <div class="btns" style="margin-top:8px">
+       <button class="b-slate" id="backToCourse">⬅ Retour course</button>
+       <button class="b-green" id="backHome2">🏠 Accueil</button>
+     </div>
+   </section>
+ </main>
 
-        function updateTime() {
-            timeElapsed++;
-            document.getElementById("timeElapsed").textContent = formatTime(timeElapsed);
+ <footer>
+   <div>Arcathlon - Équipe EPS Lycée Vauban - LUXEMBOURG - JB</div>
+ </footer>
 
-            if (timeElapsed % 90 === 0) {
-                calculateVMA();
-            }
+ <!-- QRCode lib -->
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-            if (timeElapsed >= duration) {
-                clearInterval(interval);
-                displayFinalSummary();
-                document.querySelector(".btn-download").style.display = "inline-block";
-                document.querySelector(".btn-reset").style.display = "inline-block";
-                alert("Course terminée !");
-            }
-        }
+ <script>
+ 'use strict';
+ // ===== Helpers & navigation =====
+ function qs(sel){ return document.querySelector(sel); }
+ const V = { cover: qs('#view-cover'), duo: qs('#view-duo'), course: qs('#view-course'), summary: qs('#view-summary') };
+ function show(name){ Object.values(V).forEach(v=>v.classList.add('hidden')); V[name].classList.remove('hidden'); window.scrollTo(0,0); }
+ qs('#btnStart').onclick = ()=> show('duo');
 
-        function addPlot() {
-            plotCount++;
-            document.getElementById("plotCount").textContent = plotCount;
-        }
+ function openModal(id){ document.getElementById(id).classList.remove('hidden'); }
+ function closeModals(){ document.querySelectorAll('.modal').forEach(m=>m.classList.add('hidden')); }
+ document.getElementById('btnHelp').onclick = ()=> openModal('modalHelp');
+ document.getElementById('btnSafety').onclick = ()=> openModal('modalSafety');
+ document.querySelectorAll('.modal [data-close]').forEach(b=> b.onclick = closeModals);
+ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModals(); });
 
-        function calculateVMA() {
-            const runnerVMA = parseFloat(document.getElementById("runnerVMA").value);
-            const targetPercentage = parseFloat(document.getElementById("targetPercentage").value);
-            const targetVMA = runnerVMA * (targetPercentage / 100);
-            const expectedPlots = Math.round(targetVMA * 2); // Nombre de plots à passer
-            const achievedPlots = plotCount;
+ // Quitter si en cours
+ function confirmLeaveIfNeeded(){
+   if(!session.finished && (session.laps>0 || session.shots.length>0 || elapsed>0)){
+     return confirm('Quitter la course ? Les données non terminées pourraient être perdues.');
+   }
+   return true;
+ }
+ qs('#goHome').onclick = ()=> { if(confirmLeaveIfNeeded()) show('cover'); };
+ qs('#backToDuo').onclick = ()=> { if(confirmLeaveIfNeeded()) show('duo'); };
 
-            const diffPlots = achievedPlots - expectedPlots; // Différence en plots
-            const message = `Après ${formatTime(timeElapsed)} : ${achievedPlots} plots (Différence : ${diffPlots})`;
-            document.getElementById("resultsLog").innerHTML += `<p>${message}</p>`;
-            results.push({ time: formatTime(timeElapsed), diff: diffPlots }); // Stocker le temps et la différence
-            plotCount = 0; // Réinitialiser le compte des plots pour la période suivante
-        }
+ // ===== Validation =====
+ function clean(s){ return (s||'').replace(/\s+/g,' ').trim(); }
+ function hasValue(id){ return clean(document.getElementById(id).value).length>0; }
+ function okNumber(v,min){ const n=+v; return Number.isFinite(n)&&n>=min; }
+ function val(id){ return clean(document.getElementById(id).value); }
 
-        function displayFinalSummary() {
-            document.getElementById("finalSummary").style.display = "block";
-            const totalDiff = results.reduce((acc, result) => acc + result.diff, 0);
-            const summaryMessages = results.map(result => {
-                return `Temps : ${result.time}, Différence : ${result.diff} plots`;
-            });
-            document.getElementById("finalSummary").textContent = `Bilan : ${summaryMessages.join(', ')}, Total Différence : ${totalDiff} plots`;
-        }
+ function validate(){
+   const fields=['p1_prenom','p1_nom','p1_classe','p1_sexe','p2_prenom','p2_nom','p2_classe','p2_sexe'];
+   let ok=true;
+   fields.forEach(id=>{
+     const el=document.getElementById(id);
+     const good=hasValue(id);
+     el.style.borderColor = good?'#e5e7eb':'#ef4444';
+     ok = ok && good;
+   });
+   const okDur=okNumber(val('duree_min'),1);
+   const okTour=okNumber(val('tour_m'),10);
+   document.getElementById('duree_min').style.borderColor = okDur?'#e5e7eb':'#ef4444';
+   document.getElementById('tour_m').style.borderColor = okTour?'#e5e7eb':'#ef4444';
+   ok = ok && okDur && okTour;
+   document.getElementById('goCourse').disabled = !ok;
+   return ok;
+ }
+ ['p1_prenom','p1_nom','p1_classe','p1_sexe','p2_prenom','p2_nom','p2_classe','p2_sexe','duree_min','tour_m']
+   .forEach(id=>{ const el=document.getElementById(id); el.addEventListener('input',validate); el.addEventListener('change',validate); });
 
-        function downloadResults() {
-            const data = results.map(result => {
-                return `Temps : ${result.time}, Différence : ${result.diff} plots`;
-            }).join('\n');
-            const blob = new Blob([data], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'bilan_course.txt';
-            link.click();
-        }
+ const session={ p1:null, p2:null, tourM:0, dureeMin:0, active:'p1',
+   laps:0, frac:0, shots:[], results:{p1:null,p2:null}, finished:false };
 
-        function reset() {
-            document.getElementById("runnerName").value = '';
-            document.getElementById("observerName").value = '';
-            document.getElementById("runnerVMA").value = '';
-            document.getElementById("targetPercentage").value = '';
-            document.getElementById("infoBox").style.display = "none";
-            document.getElementById("controlSection").style.display = "none";
-            document.getElementById("timeElapsed").textContent = "0:00";
-            document.getElementById("plotCount").textContent = "0";
-            document.getElementById("resultsLog").innerHTML = "";
-            document.getElementById("finalSummary").style.display = "none";
-            document.querySelector(".btn-download").style.display = "none";
-            document.querySelector(".btn-reset").style.display = "none";
-        }
+ // Accès course
+ qs('#goCourse').onclick = ()=>{
+   if(!validate()) { alert('Complétez tous les champs (obligatoires) et vérifiez les nombres.'); return; }
+   session.p1={ prenom:val('p1_prenom'), nom:val('p1_nom'), classe:val('p1_classe'), sexe:val('p1_sexe') };
+   session.p2={ prenom:val('p2_prenom'), nom:val('p2_nom'), classe:val('p2_classe'), sexe:val('p2_sexe') };
+   session.dureeMin=+val('duree_min'); session.tourM=+val('tour_m');
+   session.active='p1'; resetRunnerState(); paintCourseHeader(); show('course');
+ };
 
-        function formatTime(seconds) {
-                        const minutes = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-    </script>
+ // ===== Course =====
+ const clockEl=qs('#clock'), lapsEl=qs('#laps'), lapMetersEl=qs('#lapMeters'), targetEl=qs('#target');
+ const shotsTable=qs('#shotsTable'), runnerTitle=qs('#runnerTitle'), courseMeta=qs('#courseMeta');
+ const endCard=qs('#endCard'), distanceOut=qs('#distanceOut'), courseCard=qs('#courseCard');
+ const toSummaryWrap=qs('#toSummaryWrap'); const liveDistanceEl=qs('#liveDistance');
+ const allowedEl=qs('#allowed'), shotCountEl=qs('#shotCount'), remainEl=qs('#remain');
+ const sumScoreEl=qs('#sumScore'), indiceArcEl=qs('#indiceArc');
+
+ // Choix coureur
+ qs('#pickP1').onclick=()=> switchRunner('p1');
+ qs('#pickP2').onclick=()=> switchRunner('p2');
+
+ // Tours
+ qs('#lapPlus').onclick=()=>{ if(session.finished) return; session.laps++; renderLaps(); renderAllowances(); };
+ qs('#lapMinus').onclick=()=>{ if(session.finished) return; session.laps=Math.max(0,session.laps-1); renderLaps(); renderAllowances(); };
+
+ // Tir 0..10
+ document.querySelectorAll('#scoreButtons [data-score]').forEach(btn=>{
+   btn.onclick=()=>{
+     if(session.finished) return;
+     const score=+btn.getAttribute('data-score');
+     const allowed = calcAllowedShots();
+     if(session.shots.length>=allowed){ alert('Pas assez de tours pour tirer plus de flèches.'); return; }
+     addShot(score);
+   };
+ });
+
+ // Chrono
+ let t0=0, elapsed=0, timer=null, running=false;
+ function start(){ if(session.finished||running) return; running=true; t0=Date.now()-elapsed; timer=setInterval(tick,100); qs('#btnStartCourse').disabled=true; qs('#btnPause').disabled=false; qs('#btnReset').disabled=false; }
+ function pause(){ if(!running) return; running=false; clearInterval(timer); qs('#btnStartCourse').disabled=false; qs('#btnPause').disabled=true; }
+ function reset(){ pause(); elapsed=0; clockEl.textContent='00:00.0'; qs('#btnReset').disabled=true; session.laps=0; session.shots=[]; session.frac=0; renderLaps(); renderAllowances(); renderShots(); hideEnd(); }
+ function tick(){ elapsed=Date.now()-t0; const cs=Math.floor(elapsed/100); const m=Math.floor(cs/600), s=Math.floor((cs%600)/10), d=cs%10; clockEl.textContent=`${m<10?'0':''}${m}:${s<10?'0':''}${s}.${d}`; if(m>=session.dureeMin){ pause(); showEnd(); } }
+ qs('#btnStartCourse').onclick=start; qs('#btnPause').onclick=pause; qs('#btnReset').onclick=reset;
+
+ // Fin (overlay)
+ const endOverlay = document.getElementById('endOverlay');
+ const distanceOutOverlay = document.getElementById('distanceOutOverlay');
+ function updateDistanceOutputOverlay(){
+   const meters=Math.round((session.laps+(session.frac||0))*session.tourM);
+   distanceOutOverlay.textContent = `Distance: ${meters} m (${session.laps} tours + ${session.frac||0} tour)`;
+ }
+ function showEnd(){
+   endCard.classList.remove('hidden');
+   session.frac = session.frac || 0;
+   updateDistanceOutputOverlay(); updateDistanceOutput();
+   courseCard.classList.add('lock');
+   endOverlay.classList.add('show');
+   if(navigator.vibrate) navigator.vibrate(150);
+ }
+ function hideEnd(){
+   endCard.classList.add('hidden');
+   endOverlay.classList.remove('show');
+   courseCard.classList.remove('lock');
+ }
+ document.querySelectorAll('[data-frac-overlay]').forEach(b=>{
+   b.onclick=()=>{ if(session.finished) return; session.frac=+b.getAttribute('data-frac-overlay'); updateDistanceOutputOverlay(); };
+ });
+ document.getElementById('finishRunnerOverlay').onclick=()=> finalizeRunner();
+
+ // Panneau bas (mêmes actions)
+ endCard.querySelectorAll('[data-frac]').forEach(b=> b.onclick=()=>{ if(session.finished) return; session.frac=+b.getAttribute('data-frac'); updateDistanceOutput(); updateDistanceOutputOverlay(); });
+ qs('#finishRunner').onclick=()=> finalizeRunner();
+
+ function updateDistanceOutput(){
+   const meters=Math.round((session.laps+(session.frac||0))*session.tourM);
+   distanceOut.textContent=`Distance: ${meters} m (${session.laps} tours + ${session.frac||0} tour)`;
+ }
+ function renderLaps(){
+   lapsEl.textContent=session.laps;
+   liveDistanceEl.textContent = Math.round((session.laps+(session.frac||0))*session.tourM);
+   targetEl.textContent=session.dureeMin;
+   lapMetersEl.textContent=session.tourM;
+ }
+
+ // Shots
+ function calcAllowedShots(){
+   // 3 flèches autorisées par bloc de 3 tours
+   return Math.floor(session.laps/3)*3;
+ }
+ function renderAllowances(){
+   const allowed=calcAllowedShots();
+   allowedEl.textContent = allowed;
+   shotCountEl.textContent = session.shots.length;
+   remainEl.textContent = Math.max(0, allowed - session.shots.length);
+ }
+
+ function addShot(score){
+   const n=session.shots.length+1;
+   session.shots.push({n,score});
+   renderShots();
+   renderAllowances();
+   renderIndice();
+ }
+ function renderShots(){
+   shotsTable.innerHTML='';
+   [...session.shots].reverse().forEach(s=>{
+     const tr=document.createElement('tr');
+     tr.innerHTML=`<td>${s.n}</td><td>${s.score}</td><td><button class="b-red">Retirer</button></td>`;
+     tr.querySelector('button').onclick=()=>{ if(session.finished) return; session.shots=session.shots.filter(x=>x.n!==s.n).map((x,i)=>({n:i+1,score:x.score})); renderShots(); renderAllowances(); renderIndice(); };
+     shotsTable.append(tr);
+   });
+ }
+ function sumScores(){ return session.shots.reduce((a,b)=>a+(b?.score||0),0); }
+ function computeIndiceArc(){
+   const T=session.shots.length;
+   if(!T) return 0;
+   const avg = sumScores()/T; // moyenne sur 0..10
+   return +(avg*10).toFixed(2); // en %
+ }
+ function renderIndice(){
+   sumScoreEl.textContent = sumScores();
+   indiceArcEl.textContent = computeIndiceArc();
+ }
+
+ function switchRunner(which){
+   if(session.finished) return;
+   saveTemp();
+   session.active=which;
+   reset();
+   resetRunnerState();
+   paintCourseHeader();
+   loadTemp();
+ }
+ function resetRunnerState(){ session.laps=0; session.shots=[]; session.frac=0; renderLaps(); renderAllowances(); renderShots(); renderIndice(); hideEnd(); }
+ function paintCourseHeader(){
+   const R=session[session.active];
+   runnerTitle.textContent=`Coureur — ${R.prenom} ${R.nom}`;
+   courseMeta.textContent=`${R.classe} • ${R.sexe}`;
+   lapMetersEl.textContent=session.tourM;
+   targetEl.textContent=session.dureeMin;
+ }
+
+ const temp={ p1:{laps:0,frac:0,shots:[]}, p2:{laps:0,frac:0,shots:[]} };
+ function saveTemp(){ temp[session.active]={ laps:session.laps, frac:session.frac, shots:JSON.parse(JSON.stringify(session.shots)) }; }
+ function loadTemp(){ const t=temp[session.active]; session.laps=t.laps; session.frac=t.frac; session.shots=JSON.parse(JSON.stringify(t.shots)); renderLaps(); renderAllowances(); renderShots(); renderIndice(); hideEnd(); }
+
+ function finalizeRunner(){
+   const R=session[session.active];
+   const meters=Math.round((session.laps+(session.frac||0))*session.tourM);
+   const kmh = elapsed>0 ? +((meters/1000)/(elapsed/1000/3600)).toFixed(2) : 0;
+   const total=session.shots.length;
+   const totalPts=sumScores();
+   const indice=computeIndiceArc();
+
+   session.results[session.active]={ prenom:R.prenom, nom:R.nom, classe:R.classe, sexe:R.sexe,
+     distance:meters, vitesse:kmh, temps_ms:elapsed,
+     tours:session.laps+(session.frac||0), // pour info
+     nb_fleches: total, total_points: totalPts, indice_arc: indice
+   };
+
+   hideEnd();
+   courseCard.classList.add('lock');
+   setTimeout(()=> courseCard.classList.remove('lock'), 250);
+
+   const other=session.active==='p1'?'p2':'p1';
+   if(!session.results[other]){
+     alert('Coureur terminé. Passez au second coureur.');
+     switchRunner(other);
+     return;
+   }
+   session.finished=true;
+   document.getElementById('pickP1').disabled=true;
+   document.getElementById('pickP2').disabled=true;
+   toSummaryWrap.classList.remove('hidden');
+ }
+
+ // ===== Bilan / QR + MODE PROF =====
+ const backToCourseBtn=qs('#backToCourse'); const backHome2Btn=qs('#backHome2'); const goSummaryBtn=qs('#goSummary');
+ let summaryData = [];
+ let profMode = false;
+
+ function msToClock(ms){
+   const t=Math.max(0,Math.round(ms/100)); // dixièmes
+   const m=Math.floor(t/600), s=Math.floor((t%600)/10), d=t%10;
+   return `${m<10?'0':''}${m}:${s<10?'0':''}${s}.${d}`;
+ }
+
+ function buildQrData(dataRows){
+   return dataRows.map(d => ({
+     nom: d.nom, prenom: d.prenom, classe: d.classe, sexe: d.sexe,
+     distance: d.distance, vitesse: d.vitesse, temps_ms: d.temps_ms,
+     tours: d.tours, nb_fleches: d.nb_fleches, total_points: d.total_points, indice_arc: d.indice_arc
+   }));
+ }
+ function buildQR(payload){
+   const qrBox=document.getElementById('qr');
+   qrBox.innerHTML='';
+   try{ new QRCode(qrBox,{ text:payload, width:256, height:256, correctLevel:QRCode.CorrectLevel.M }); }
+   catch(e){ console.warn('QR non généré:', e); }
+ }
+
+ function toCSV(data) {
+   const headers = [
+     'nom','prenom','classe','sexe',
+     'distance','vitesse','temps',
+     'tours','nb_fleches','total_points','indice_arc'
+   ];
+   const esc = (v) => {
+     const s = (v==null ? '' : String(v));
+     if (/[;\"\n]/.test(s)) return `"${s.replace(/\"/g,'""')}"`;
+     return s;
+   };
+   const lines = [
+     headers.join(';'),
+     ...data.map(d => [
+       d.nom,d.prenom,d.classe,d.sexe,
+       d.distance,d.vitesse,msToClock(d.temps_ms),
+       d.tours,d.nb_fleches,d.total_points,d.indice_arc
+     ].map(esc).join(';'))
+   ];
+   return lines.join('\n');
+ }
+
+ function renderSummary(){
+   const rows = summaryData.map((d,i) => `
+     <tr data-index="${i}">
+       <td data-field="nom" ${profMode?'contenteditable="true"':''}>${d.nom}</td>
+       <td data-field="prenom" ${profMode?'contenteditable="true"':''}>${d.prenom}</td>
+       <td data-field="classe" ${profMode?'contenteditable="true"':''}>${d.classe}</td>
+       <td data-field="sexe" ${profMode?'contenteditable="true"':''}>${d.sexe}</td>
+       <td data-field="distance" ${profMode?'contenteditable="true"':''}>${d.distance}</td>
+       <td data-field="vitesse" ${profMode?'contenteditable="true"':''}>${d.vitesse}</td>
+       <td>${msToClock(d.temps_ms)}</td>
+       <td data-field="tours" ${profMode?'contenteditable="true"':''}>${d.tours}</td>
+       <td data-field="nb_fleches" ${profMode?'contenteditable="true"':''}>${d.nb_fleches}</td>
+       <td data-field="total_points" ${profMode?'contenteditable="true"':''}>${d.total_points}</td>
+       <td>${d.indice_arc}</td>
+     </tr>
+   `).join('');
+   document.getElementById('resume').innerHTML = `
+     <table id="summaryTable" ${profMode?'class="prof-on"':''}>
+       <thead>
+         <tr>
+           <th>Nom</th><th>Prénom</th><th>Classe</th><th>Sexe</th>
+           <th>Distance (m)</th><th>Vitesse (km/h)</th><th>Temps</th>
+           <th>Tours</th><th>Nb flèches</th><th>Total points</th><th>Indice arc (%)</th>
+         </tr>
+       </thead>
+       <tbody id="resumeBody">${rows}</tbody>
+     </table>`;
+
+   const payloadQR = JSON.stringify(buildQrData(summaryData));
+   buildQR(payloadQR);
+
+   const exportBtn = document.getElementById('exportCsv');
+   exportBtn.onclick = () => {
+     const csv = toCSV(summaryData);
+     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+     const url = URL.createObjectURL(blob);
+     const a = document.createElement('a');
+     const fileDate = new Date().toISOString().slice(0,10);
+     a.href = url; a.download = `Arcathlon_${fileDate}.csv`;
+     document.body.appendChild(a); a.click(); document.body.removeChild(a);
+     URL.revokeObjectURL(url);
+   };
+
+   const profHint = document.getElementById('profHint');
+   const act = document.getElementById('activateProf');
+   const deact = document.getElementById('deactivateProf');
+   const apply = document.getElementById('applyEdits');
+   act.disabled = profMode;
+   deact.disabled = !profMode;
+   apply.disabled = !profMode;
+   profHint.textContent = profMode
+     ? 'Mode Prof activé : corrigez puis “Mettre à jour QR/CSV”. Indice recalculé automatiquement.'
+     : 'Saisir le code 57 pour corriger une valeur (distance, flèches, points…).';
+ }
+
+ function parseEditsFromTable(){
+   const tbody = document.getElementById('resumeBody');
+   const rows = Array.from(tbody.querySelectorAll('tr'));
+   return rows.map((tr,i)=>{
+     function txt(field){ return (tr.querySelector(`[data-field="${field}"]`)?.textContent||'').trim(); }
+     function int(field, def=0){ const v=parseInt((txt(field)||'').replace(',', '.'),10); return Number.isFinite(v)? Math.max(0,v) : def; }
+     function num(field, def=0){ const v=Number((txt(field)||'').replace(',', '.')); return Number.isFinite(v)? v : def; }
+     const nb=int('nb_fleches'); const pts=int('total_points');
+     const indice = nb>0 ? +(((pts/nb)*10).toFixed(2)) : 0;
+     return {
+       nom: txt('nom'), prenom: txt('prenom'), classe: txt('classe'),
+       sexe: (txt('sexe')||'F').toUpperCase()==='M'?'M':'F',
+       distance: int('distance'), vitesse: +num('vitesse').toFixed(2),
+       temps_ms: summaryData[i]?.temps_ms || 0,
+       tours: num('tours'), nb_fleches: nb, total_points: pts, indice_arc: indice
+     };
+   });
+ }
+
+ document.getElementById('activateProf').onclick = ()=>{
+   const code = (document.getElementById('profCode').value||'').trim();
+   if(code === '57'){ profMode = true; renderSummary(); } else { alert('Code incorrect.'); }
+ };
+ document.getElementById('deactivateProf').onclick = ()=>{ profMode = false; renderSummary(); };
+ document.getElementById('applyEdits').onclick = ()=>{
+   if(!profMode) return;
+   const updated = parseEditsFromTable();
+   summaryData = updated;
+   renderSummary();
+   alert('Bilan mis à jour. QR et CSV régénérés.');
+ };
+
+ // Aller au bilan
+ document.getElementById('goSummary').onclick=()=>{
+   const out=[];
+   if(session.results.p1) out.push({...session.results.p1});
+   if(session.results.p2) out.push({...session.results.p2});
+   summaryData = out;
+   show('summary');
+   profMode = false;
+   renderSummary();
+ };
+
+ qs('#backToCourse').onclick=()=> show('course');
+ qs('#backHome2').onclick=()=> { if(confirmLeaveIfNeeded()) show('cover'); };
+
+ // ===== Init =====
+ validate();
+ </script>
 </body>
 </html>
