@@ -57,7 +57,7 @@
  table{width:100%;border-collapse:collapse}
  th,td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:16px}
  .lock *{pointer-events:none; opacity:.7}
- .shot-grid{display:grid;grid-template-columns:repeat(11,1fr);gap:8px;margin-top:8px}
+ .shot-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:8px}
 
  #view-cover{min-height:calc(100vh - 56px); display:flex; align-items:center; justify-content:center;}
  .cover-stack{display:flex; flex-direction:column; gap:16px; align-items:center;}
@@ -98,7 +98,7 @@
      <div class="cover-stack">
        <div>
          <h1>Arcathlon</h1>
-         <p class="tagline">Course ↔ Tir à l’arc par blocs de 3 tours — compatible ScanProf</p>
+         <p class="tagline">Application EPS compatible ScanProf</p>
        </div>
        <div class="btns" style="margin-top:12px">
          <button class="b-primary" id="btnStart">▶️ Démarrer</button>
@@ -117,30 +117,43 @@
      <div class="modal-head help"><span>ℹ️</span><span>Mode d’emploi — Arcathlon</span></div>
      <div class="modal-body">
        <ol class="help-list">
-         <li>Renseigner pour chaque coureur : <strong>Prénom</strong>, <strong>Nom</strong>, <strong>Classe</strong>, <strong>Sexe</strong>.</li>
-         <li>Paramètres : <strong>Durée (min)</strong> et <strong>Longueur du tour (m)</strong>.</li>
+         <li>Saisir pour chaque coureur : <strong>Prénom</strong>, <strong>Nom</strong>, <strong>Classe</strong>, <strong>Sexe</strong>.</li>
+         <li>Définir la <strong>Durée (min)</strong>, la <strong>Longueur du tour (m)</strong> et la <strong>règle flèches</strong> (ex. 3 tours → 3 flèches).</li>
          <li>En course : <strong>Start/Pause</strong> le chrono ; <strong>+1 / −1</strong> pour les tours.</li>
-         <li><strong>Tir débloqué chaque bloc de 3 tours</strong> : 3 flèches autorisées par bloc (scores 0–10).</li>
-         <li>Fin du temps : compléter la <strong>fraction de tour</strong>, terminer, puis générer <strong>QR</strong> et <strong>CSV</strong>.</li>
+         <li>Le tir est <strong>débloqué par blocs</strong> (selon votre règle). Boutons scores : <b>0, 6, 7, 8, 9, 10</b>.</li>
+         <li>Fin du temps : compléter la <strong>fraction de tour</strong> (0 / ¼ / ½ / ¾), valider, puis générer <strong>QR</strong> et <strong>CSV</strong>.</li>
        </ol>
        <div class="btns"><button class="b-slate" data-close>Fermer</button></div>
      </div>
    </div>
  </div>
 
- <!-- ===== Modale Fiche sécurité (résumé) ===== -->
+ <!-- ===== Modale Fiche sécurité (étoffée) ===== -->
  <div class="modal hidden" id="modalSafety">
    <div class="modal-card">
      <div class="modal-head safe"><span>🛟</span><span>Fiche sécurité — Arcathlon</span></div>
      <div class="modal-body">
-       <h4>Zone de tir</h4>
+       <h4>Avant l’activité</h4>
        <ul class="help-list">
-         <li>Arc toujours dirigé vers la cible ; pas de tir strict ; on récupère les flèches sur signal.</li>
-         <li>Un seul plan de tir, archers alignés, personne devant la ligne.</li>
+         <li>Vérifier la zone de course : tracé dégagé, surface adhérente, absence d’obstacles dangereux.</li>
+         <li>Installer un <strong>pas de tir matérialisé</strong> (ligne de tir + zone d’attente en retrait).</li>
+         <li>Contrôler arcs/flèches (état des branches, corde, empennage, pointes), EPI si nécessaires.</li>
        </ul>
-       <h4>Course</h4>
+       <h4>Règles au pas de tir</h4>
        <ul class="help-list">
-         <li>Gestion des croisements course ↔ tir, pas de bousculade.</li>
+         <li>Arc toujours dirigé vers les cibles. <strong>Ne jamais</strong> bander l’arc en dehors du pas de tir.</li>
+         <li>Tirer <strong>uniquement</strong> sur signal/autorisation ; <strong>personne</strong> devant la ligne de tir.</li>
+         <li>On cesse le tir immédiatement à tout signal d’arrêt ; poser les arcs, reculer d’un pas.</li>
+       </ul>
+       <h4>Récupération des flèches</h4>
+       <ul class="help-list">
+         <li>Récupération <strong>sur signal</strong> uniquement ; marche, pas de course devant les cibles.</li>
+         <li>Une main contre la cible pour la stabilité, l’autre retire la flèche dans l’axe ; vérifier qu’aucune personne n’est derrière.</li>
+       </ul>
+       <h4>Circulation course ↔ tir</h4>
+       <ul class="help-list">
+         <li>Flux séparés (sens de circulation). On <strong>attend son tour</strong> dans la zone d’attente.</li>
+         <li>Respect mutuel : pas de dépassement agressif, vigilance aux croisements.</li>
        </ul>
        <div class="btns"><button class="b-slate" data-close>Fermer</button></div>
      </div>
@@ -171,7 +184,7 @@
        </div>
      </div>
 
-     <div class="band">Paramètres (communs)</div>
+     <div class="band">Paramètres de course</div>
      <div class="row">
        <div>
          <label>Durée (minutes)</label>
@@ -183,6 +196,23 @@
        </div>
      </div>
 
+     <div class="band">Règle flèches (blocs)</div>
+     <div class="row">
+       <div>
+         <label>Tours par bloc</label>
+         <input id="tours_bloc" type="number" inputmode="numeric" min="1" step="1" value="3"/>
+       </div>
+       <div>
+         <label>Flèches par bloc</label>
+         <input id="fleches_bloc" type="number" inputmode="numeric" min="1" step="1" value="3"/>
+       </div>
+     </div>
+     <div class="btns" style="margin-top:8px">
+       <button class="b-slate" id="preset33">3 tours → 3 flèches</button>
+       <button class="b-slate" id="preset11">1 tour → 1 flèche</button>
+       <button class="b-slate" id="preset13">1 tour → 3 flèches</button>
+     </div>
+
      <div class="btns" style="margin-top:18px">
        <button class="b-primary" id="goCourse" disabled>Accéder à la course</button>
        <button class="b-slate" id="goHome">🏠 Accueil</button>
@@ -190,7 +220,7 @@
    </section>
  </main>
 
- <!-- ===== Course + Tir en boucles ===== -->
+ <!-- ===== Course + Tir ===== -->
  <main class="shell hidden" id="view-course">
    <section class="card center" id="courseCard">
      <div class="btns" style="margin-bottom:8px">
@@ -227,18 +257,12 @@
          </div>
        </div>
        <div class="card">
-         <h3>🏹 Tir à l’arc (0–10)</h3>
+         <h3>🏹 Tir à l’arc (0, 6, 7, 8, 9, 10)</h3>
          <p class="muted">
            Flèches autorisées : <b id="allowed">0</b> — Tirées : <b id="shotCount">0</b> — Restantes : <b id="remain">0</b>
          </p>
          <div class="shot-grid" id="scoreButtons">
-           <!-- 0..10 -->
            <button class="b-slate" data-score="0">0</button>
-           <button class="b-slate" data-score="1">1</button>
-           <button class="b-slate" data-score="2">2</button>
-           <button class="b-slate" data-score="3">3</button>
-           <button class="b-slate" data-score="4">4</button>
-           <button class="b-slate" data-score="5">5</button>
            <button class="b-slate" data-score="6">6</button>
            <button class="b-slate" data-score="7">7</button>
            <button class="b-slate" data-score="8">8</button>
@@ -251,6 +275,13 @@
              <tbody id="shotsTable"></tbody>
            </table>
          </div>
+         <p class="muted" style="margin-top:8px">
+           <span class="pill">Nb 10 : <b id="c10">0</b></span>
+           <span class="pill">Nb 9 : <b id="c9">0</b></span>
+           <span class="pill">Nb 8 : <b id="c8">0</b></span>
+           <span class="pill">Nb 7 : <b id="c7">0</b></span>
+           <span class="pill">Nb 6 : <b id="c6">0</b></span>
+         </p>
          <p class="muted" style="margin-top:8px">
            <strong>Total tir :</strong> <span id="sumScore">0</span> pts — <strong>Indice arc :</strong> <span id="indiceArc">0</span>%
          </p>
@@ -369,16 +400,26 @@
    });
    const okDur=okNumber(val('duree_min'),1);
    const okTour=okNumber(val('tour_m'),10);
-   document.getElementById('duree_min').style.borderColor = okDur?'#e5e7eb':'#ef4444';
-   document.getElementById('tour_m').style.borderColor = okTour?'#e5e7eb':'#ef4444';
-   ok = ok && okDur && okTour;
+   const okTB=okNumber(val('tours_bloc'),1);
+   const okFB=okNumber(val('fleches_bloc'),1);
+   ['duree_min','tour_m','tours_bloc','fleches_bloc'].forEach(id=>{
+     document.getElementById(id).style.borderColor =
+       (id==='duree_min'?okDur:(id==='tour_m'?okTour:(id==='tours_bloc'?okTB:okFB))) ? '#e5e7eb':'#ef4444';
+   });
+   ok = ok && okDur && okTour && okTB && okFB;
    document.getElementById('goCourse').disabled = !ok;
    return ok;
  }
- ['p1_prenom','p1_nom','p1_classe','p1_sexe','p2_prenom','p2_nom','p2_classe','p2_sexe','duree_min','tour_m']
+ ['p1_prenom','p1_nom','p1_classe','p1_sexe','p2_prenom','p2_nom','p2_classe','p2_sexe','duree_min','tour_m','tours_bloc','fleches_bloc']
    .forEach(id=>{ const el=document.getElementById(id); el.addEventListener('input',validate); el.addEventListener('change',validate); });
 
- const session={ p1:null, p2:null, tourM:0, dureeMin:0, active:'p1',
+ // Presets règles
+ function setRule(tb, fb){ document.getElementById('tours_bloc').value=tb; document.getElementById('fleches_bloc').value=fb; validate(); }
+ document.getElementById('preset33').onclick = ()=> setRule(3,3);
+ document.getElementById('preset11').onclick = ()=> setRule(1,1);
+ document.getElementById('preset13').onclick = ()=> setRule(1,3);
+
+ const session={ p1:null, p2:null, tourM:0, dureeMin:0, rules:{tb:3,fb:3}, active:'p1',
    laps:0, frac:0, shots:[], results:{p1:null,p2:null}, finished:false };
 
  // Accès course
@@ -387,6 +428,8 @@
    session.p1={ prenom:val('p1_prenom'), nom:val('p1_nom'), classe:val('p1_classe'), sexe:val('p1_sexe') };
    session.p2={ prenom:val('p2_prenom'), nom:val('p2_nom'), classe:val('p2_classe'), sexe:val('p2_sexe') };
    session.dureeMin=+val('duree_min'); session.tourM=+val('tour_m');
+   session.rules.tb=+document.getElementById('tours_bloc').value;
+   session.rules.fb=+document.getElementById('fleches_bloc').value;
    session.active='p1'; resetRunnerState(); paintCourseHeader(); show('course');
  };
 
@@ -397,6 +440,7 @@
  const toSummaryWrap=qs('#toSummaryWrap'); const liveDistanceEl=qs('#liveDistance');
  const allowedEl=qs('#allowed'), shotCountEl=qs('#shotCount'), remainEl=qs('#remain');
  const sumScoreEl=qs('#sumScore'), indiceArcEl=qs('#indiceArc');
+ const c6El=qs('#c6'), c7El=qs('#c7'), c8El=qs('#c8'), c9El=qs('#c9'), c10El=qs('#c10');
 
  // Choix coureur
  qs('#pickP1').onclick=()=> switchRunner('p1');
@@ -406,7 +450,7 @@
  qs('#lapPlus').onclick=()=>{ if(session.finished) return; session.laps++; renderLaps(); renderAllowances(); };
  qs('#lapMinus').onclick=()=>{ if(session.finished) return; session.laps=Math.max(0,session.laps-1); renderLaps(); renderAllowances(); };
 
- // Tir 0..10
+ // Tir 0,6..10
  document.querySelectorAll('#scoreButtons [data-score]').forEach(btn=>{
    btn.onclick=()=>{
      if(session.finished) return;
@@ -465,10 +509,12 @@
    lapMetersEl.textContent=session.tourM;
  }
 
- // Shots
+ // Shots / règles
  function calcAllowedShots(){
-   // 3 flèches autorisées par bloc de 3 tours
-   return Math.floor(session.laps/3)*3;
+   const {tb,fb}=session.rules;
+   // nb blocs complétés (au sens "tours entiers")
+   const blocs = Math.floor(session.laps / tb);
+   return blocs * fb;
  }
  function renderAllowances(){
    const allowed=calcAllowedShots();
@@ -493,6 +539,11 @@
      shotsTable.append(tr);
    });
  }
+ function scoreCounts(){
+   const c={6:0,7:0,8:0,9:0,10:0};
+   session.shots.forEach(s=>{ if(c.hasOwnProperty(s.score)) c[s.score]++; });
+   return c;
+ }
  function sumScores(){ return session.shots.reduce((a,b)=>a+(b?.score||0),0); }
  function computeIndiceArc(){
    const T=session.shots.length;
@@ -501,6 +552,8 @@
    return +(avg*10).toFixed(2); // en %
  }
  function renderIndice(){
+   const c=scoreCounts();
+   c6El.textContent=c[6]; c7El.textContent=c[7]; c8El.textContent=c[8]; c9El.textContent=c[9]; c10El.textContent=c[10];
    sumScoreEl.textContent = sumScores();
    indiceArcEl.textContent = computeIndiceArc();
  }
@@ -531,14 +584,13 @@
    const R=session[session.active];
    const meters=Math.round((session.laps+(session.frac||0))*session.tourM);
    const kmh = elapsed>0 ? +((meters/1000)/(elapsed/1000/3600)).toFixed(2) : 0;
-   const total=session.shots.length;
-   const totalPts=sumScores();
+   const c=scoreCounts();
    const indice=computeIndiceArc();
 
    session.results[session.active]={ prenom:R.prenom, nom:R.nom, classe:R.classe, sexe:R.sexe,
-     distance:meters, vitesse:kmh, temps_ms:elapsed,
-     tours:session.laps+(session.frac||0), // pour info
-     nb_fleches: total, total_points: totalPts, indice_arc: indice
+     distance:meters,
+     nb6:c[6], nb7:c[7], nb8:c[8], nb9:c[9], nb10:c[10],
+     indice_arc: indice
    };
 
    hideEnd();
@@ -562,17 +614,11 @@
  let summaryData = [];
  let profMode = false;
 
- function msToClock(ms){
-   const t=Math.max(0,Math.round(ms/100)); // dixièmes
-   const m=Math.floor(t/600), s=Math.floor((t%600)/10), d=t%10;
-   return `${m<10?'0':''}${m}:${s<10?'0':''}${s}.${d}`;
- }
-
  function buildQrData(dataRows){
+   // STRICTEMENT ce que tu demandes dans le QR
    return dataRows.map(d => ({
      nom: d.nom, prenom: d.prenom, classe: d.classe, sexe: d.sexe,
-     distance: d.distance, vitesse: d.vitesse, temps_ms: d.temps_ms,
-     tours: d.tours, nb_fleches: d.nb_fleches, total_points: d.total_points, indice_arc: d.indice_arc
+     distance: d.distance, nb6: d.nb6, nb7: d.nb7, nb8: d.nb8, nb9: d.nb9, nb10: d.nb10, indice_arc: d.indice_arc
    }));
  }
  function buildQR(payload){
@@ -583,11 +629,7 @@
  }
 
  function toCSV(data) {
-   const headers = [
-     'nom','prenom','classe','sexe',
-     'distance','vitesse','temps',
-     'tours','nb_fleches','total_points','indice_arc'
-   ];
+   const headers = ['nom','prenom','classe','sexe','distance','nb6','nb7','nb8','nb9','nb10','indice_arc'];
    const esc = (v) => {
      const s = (v==null ? '' : String(v));
      if (/[;\"\n]/.test(s)) return `"${s.replace(/\"/g,'""')}"`;
@@ -595,11 +637,7 @@
    };
    const lines = [
      headers.join(';'),
-     ...data.map(d => [
-       d.nom,d.prenom,d.classe,d.sexe,
-       d.distance,d.vitesse,msToClock(d.temps_ms),
-       d.tours,d.nb_fleches,d.total_points,d.indice_arc
-     ].map(esc).join(';'))
+     ...data.map(d => headers.map(h => esc(d[h])).join(';'))
    ];
    return lines.join('\n');
  }
@@ -612,11 +650,11 @@
        <td data-field="classe" ${profMode?'contenteditable="true"':''}>${d.classe}</td>
        <td data-field="sexe" ${profMode?'contenteditable="true"':''}>${d.sexe}</td>
        <td data-field="distance" ${profMode?'contenteditable="true"':''}>${d.distance}</td>
-       <td data-field="vitesse" ${profMode?'contenteditable="true"':''}>${d.vitesse}</td>
-       <td>${msToClock(d.temps_ms)}</td>
-       <td data-field="tours" ${profMode?'contenteditable="true"':''}>${d.tours}</td>
-       <td data-field="nb_fleches" ${profMode?'contenteditable="true"':''}>${d.nb_fleches}</td>
-       <td data-field="total_points" ${profMode?'contenteditable="true"':''}>${d.total_points}</td>
+       <td data-field="nb6" ${profMode?'contenteditable="true"':''}>${d.nb6}</td>
+       <td data-field="nb7" ${profMode?'contenteditable="true"':''}>${d.nb7}</td>
+       <td data-field="nb8" ${profMode?'contenteditable="true"':''}>${d.nb8}</td>
+       <td data-field="nb9" ${profMode?'contenteditable="true"':''}>${d.nb9}</td>
+       <td data-field="nb10" ${profMode?'contenteditable="true"':''}>${d.nb10}</td>
        <td>${d.indice_arc}</td>
      </tr>
    `).join('');
@@ -625,8 +663,9 @@
        <thead>
          <tr>
            <th>Nom</th><th>Prénom</th><th>Classe</th><th>Sexe</th>
-           <th>Distance (m)</th><th>Vitesse (km/h)</th><th>Temps</th>
-           <th>Tours</th><th>Nb flèches</th><th>Total points</th><th>Indice arc (%)</th>
+           <th>Distance (m)</th>
+           <th>Nb 6</th><th>Nb 7</th><th>Nb 8</th><th>Nb 9</th><th>Nb 10</th>
+           <th>Indice arc (%)</th>
          </tr>
        </thead>
        <tbody id="resumeBody">${rows}</tbody>
@@ -655,8 +694,8 @@
    deact.disabled = !profMode;
    apply.disabled = !profMode;
    profHint.textContent = profMode
-     ? 'Mode Prof activé : corrigez puis “Mettre à jour QR/CSV”. Indice recalculé automatiquement.'
-     : 'Saisir le code 57 pour corriger une valeur (distance, flèches, points…).';
+     ? 'Mode Prof activé : corrigez (distance, nb6..nb10) puis “Mettre à jour QR/CSV”. Indice recalculé.'
+     : 'Saisir le code 57 pour corriger une valeur (distance, nb6..nb10).';
  }
 
  function parseEditsFromTable(){
@@ -665,15 +704,18 @@
    return rows.map((tr,i)=>{
      function txt(field){ return (tr.querySelector(`[data-field="${field}"]`)?.textContent||'').trim(); }
      function int(field, def=0){ const v=parseInt((txt(field)||'').replace(',', '.'),10); return Number.isFinite(v)? Math.max(0,v) : def; }
-     function num(field, def=0){ const v=Number((txt(field)||'').replace(',', '.')); return Number.isFinite(v)? v : def; }
-     const nb=int('nb_fleches'); const pts=int('total_points');
-     const indice = nb>0 ? +(((pts/nb)*10).toFixed(2)) : 0;
+
+     const nb6=int('nb6'), nb7=int('nb7'), nb8=int('nb8'), nb9=int('nb9'), nb10=int('nb10');
+     const totalShots = nb6+nb7+nb8+nb9+nb10; // on ignore les 0 ici côté édition
+     const totalPoints = nb6*6 + nb7*7 + nb8*8 + nb9*9 + nb10*10;
+     const indice = totalShots>0 ? +(((totalPoints/totalShots)/10*100).toFixed(2)) : 0;
+
      return {
        nom: txt('nom'), prenom: txt('prenom'), classe: txt('classe'),
        sexe: (txt('sexe')||'F').toUpperCase()==='M'?'M':'F',
-       distance: int('distance'), vitesse: +num('vitesse').toFixed(2),
-       temps_ms: summaryData[i]?.temps_ms || 0,
-       tours: num('tours'), nb_fleches: nb, total_points: pts, indice_arc: indice
+       distance: int('distance'),
+       nb6, nb7, nb8, nb9, nb10,
+       indice_arc: indice
      };
    });
  }
@@ -707,6 +749,7 @@
 
  // ===== Init =====
  validate();
+
  </script>
 </body>
 </html>
