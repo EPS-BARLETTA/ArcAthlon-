@@ -90,7 +90,7 @@
   .end-card h3{margin-top:0}
   .end-note{color:var(--muted); margin-top:8px}
 
-  /* === Nouveaux encadrés stats tir === */
+  /* Encadrés stats tir */
   .statsBox{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center;
     border:2px solid #e5e7eb; border-radius:14px; padding:10px; background:#fff;}
   .stat{display:flex; gap:8px; align-items:center; font-weight:800; padding:8px 12px; border-radius:12px; border:1px solid transparent}
@@ -101,23 +101,21 @@
   .summaryBox{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center;
     border:2px dashed #e5e7eb; border-radius:12px; padding:10px; background:#fff; margin-top:10px}
   .sumchip{display:inline-flex; gap:6px; align-items:center; padding:6px 10px; border-radius:999px; font-weight:800}
-  .sumchip.good{background:rgba(34,197,94,.12); color:#14532d}
-  .sumchip.bad{background:rgba(239,68,68,.12); color:#7f1d1d}
-  .sumchip.total{background:#eef2f7}
   .sumchip.indice{background:rgba(10,88,255,.10); color:#0a58ff}
   .sumchip.chip10{background:rgba(34,197,94,.12); color:#14532d}
   .sumchip.chip9{background:rgba(16,185,129,.12); color:#065f46}
   .sumchip.chip8{background:rgba(59,130,246,.12); color:#1e3a8a}
   .sumchip.chip7{background:rgba(245,158,11,.15); color:#7c2d12}
   .sumchip.chip6{background:rgba(244,63,94,.10); color:#9f1239}
-  /* Résumé bilan (overlay) + chip 0 */
+  .sumchip.chip0{background:rgba(239,68,68,.12); color:#7f1d1d}
+
+  /* Overlay bilan prêt */
   #summaryOverlay{position:fixed; inset:0; display:none; z-index:60; align-items:center; justify-content:center; background:rgba(2,6,23,.55);} 
   #summaryOverlay.show{display:flex;}
-  .sumchip.chip0{background:rgba(239,68,68,.12); color:#7f1d1d}
 </style>
 </head>
 <body>
-  <!-- ===== Accueil ===== -->
+  <!-- Accueil -->
   <main class="shell" id="view-cover">
     <section class="card center" style="padding:28px 20px">
       <div class="cover-stack">
@@ -136,7 +134,7 @@
     </section>
   </main>
 
-  <!-- ===== Modale Aide ===== -->
+  <!-- Modale Aide -->
   <div class="modal hidden" id="modalHelp">
     <div class="modal-card">
       <div class="modal-head help"><span>ℹ️</span><span>Mode d’emploi — Arcathlon</span></div>
@@ -153,7 +151,7 @@
     </div>
   </div>
 
-  <!-- ===== Modale Fiche sécurité (étoffée) ===== -->
+  <!-- Modale Fiche sécurité -->
   <div class="modal hidden" id="modalSafety">
     <div class="modal-card">
       <div class="modal-head safe"><span>🛟</span><span>Fiche sécurité — Arcathlon</span></div>
@@ -185,7 +183,7 @@
     </div>
   </div>
 
-  <!-- ===== Saisie 2 coureurs ===== -->
+  <!-- Saisie 2 coureurs -->
   <main class="shell hidden" id="view-duo">
     <section class="card">
       <h2>Saisie des informations</h2>
@@ -245,7 +243,7 @@
     </section>
   </main>
 
-  <!-- ===== Course + Tir ===== -->
+  <!-- Course + Tir -->
   <main class="shell hidden" id="view-course">
     <section class="card center" id="courseCard">
       <div class="btns" style="margin-bottom:8px">
@@ -286,9 +284,9 @@
 
           <!-- Encadré coloré flèches -->
           <div class="statsBox" id="shotsEncadre">
-            <div class="stat allowed">Autorisées : <span id="allowed">0</span></div>
-            <div class="stat tired">Tirées : <span id="shotCount">0</span></div>
-            <div class="stat remain">Restantes : <span id="remain">0</span></div>
+            <div class="stat allowed">Autorisées : <span id="allowed">0</span></div>
+            <div class="stat tired">Tirées : <span id="shotCount">0</span></div>
+            <div class="stat remain">Restantes : <span id="remain">0</span></div>
           </div>
 
           <!-- Boutons de saisie -->
@@ -301,25 +299,24 @@
             <button class="b-slate" data-score="10">10</button>
           </div>
 
-          <!-- Résumé immédiat sous saisie (version: 10..6 + indice) -->
+          <!-- Résumé immédiat -->
           <div class="summaryBox" id="shootSummary">
-            <span class="sumchip chip10">Nb 10 : <b id="c10">0</b></span>
-            <span class="sumchip chip9">Nb 9 : <b id="c9">0</b></span>
-            <span class="sumchip chip8">Nb 8 : <b id="c8">0</b></span>
-            <span class="sumchip chip7">Nb 7 : <b id="c7">0</b></span>
-            <span class="sumchip chip6">Nb 6 : <b id="c6">0</b></span>
-            <span class="sumchip chip0">Nb 0 : <b id="c0">0</b></span>
-            <span class="sumchip indice">Indice arc : <b id="indiceArc">0</b>%</span>
+            <span class="sumchip chip10">Nb 10 : <b id="c10">0</b></span>
+            <span class="sumchip chip9">Nb 9 : <b id="c9">0</b></span>
+            <span class="sumchip chip8">Nb 8 : <b id="c8">0</b></span>
+            <span class="sumchip chip7">Nb 7 : <b id="c7">0</b></span>
+            <span class="sumchip chip6">Nb 6 : <b id="c6">0</b></span>
+            <span class="sumchip chip0">Nb 0 : <b id="c0">0</b></span>
+            <span class="sumchip indice">Indice arc : <b id="indiceArc">0</b>%</span>
           </div>
 
-          <!-- Détails tirs + compteurs 6..10 -->
+          <!-- Détails tirs -->
           <div style="overflow:auto;margin-top:8px">
             <table>
               <thead><tr><th>#</th><th>Score</th><th>Action</th></tr></thead>
               <tbody id="shotsTable"></tbody>
             </table>
           </div>
-          
         </div>
       </div>
 
@@ -372,7 +369,7 @@
     </div>
   </div>
 
-  <!-- ===== Bilan / QR ===== -->
+  <!-- Bilan / QR -->
   <main class="shell hidden" id="view-summary">
     <section class="card center">
       <h2>Bilan — QR compatible ScanProf</h2>
@@ -407,7 +404,7 @@
 
   <script>
   'use strict';
-  // ===== Helpers & navigation =====
+  // Helpers & navigation
   function qs(sel){ return document.querySelector(sel); }
   const V = { cover: qs('#view-cover'), duo: qs('#view-duo'), course: qs('#view-course'), summary: qs('#view-summary') };
   function show(name){ Object.values(V).forEach(v=>v.classList.add('hidden')); V[name].classList.remove('hidden'); window.scrollTo(0,0); }
@@ -430,7 +427,7 @@
   qs('#goHome').onclick = ()=> { if(confirmLeaveIfNeeded()) show('cover'); };
   qs('#backToDuo').onclick = ()=> { if(confirmLeaveIfNeeded()) show('duo'); };
 
-  // ===== Validation =====
+  // Validation
   function clean(s){ return (s||'').replace(/\s+/g,' ').trim(); }
   function hasValue(id){ return clean(document.getElementById(id).value).length>0; }
   function okNumber(v,min){ const n=+v; return Number.isFinite(n)&&n>=min; }
@@ -480,7 +477,7 @@
     session.active='p1'; resetRunnerState(); paintCourseHeader(); show('course');
   };
 
-  // ===== Course =====
+  // Course
   const clockEl=qs('#clock'), lapsEl=qs('#laps'), lapMetersEl=qs('#lapMeters'), targetEl=qs('#target');
   const shotsTable=qs('#shotsTable'), runnerTitle=qs('#runnerTitle'), courseMeta=qs('#courseMeta');
   const endCard=qs('#endCard'), distanceOut=qs('#distanceOut'), courseCard=qs('#courseCard');
@@ -497,7 +494,7 @@
   qs('#lapPlus').onclick=()=>{ if(session.finished) return; session.laps++; renderLaps(); renderAllowances(); };
   qs('#lapMinus').onclick=()=>{ if(session.finished) return; session.laps=Math.max(0,session.laps-1); renderLaps(); renderAllowances(); };
 
-  // Tir 0,6..10
+  // Tir
   document.querySelectorAll('#scoreButtons [data-score]').forEach(btn=>{
     btn.onclick=()=>{
       if(session.finished) return;
@@ -546,11 +543,11 @@
   function showSummaryOverlay(){ if(summaryOverlay){ summaryOverlay.classList.add('show'); if(navigator.vibrate) navigator.vibrate(120); } }
   function hideSummaryOverlay(){ if(summaryOverlay){ summaryOverlay.classList.remove('show'); } }
   const overlayGoBtn = document.getElementById('overlayGoSummary');
-  if(overlayGoBtn) overlayGoBtn.onclick = ()=>{ hideSummaryOverlay(); document.getElementById('goSummary')?.click(); };
+  if(overlayGoBtn) overlayGoBtn.onclick = ()=>{ hideSummaryOverlay(); const goBtn = document.getElementById('goSummary'); if (goBtn) goBtn.click(); };
   const overlayCloseBtn = document.getElementById('overlayCloseSummary');
   if(overlayCloseBtn) overlayCloseBtn.onclick = ()=> hideSummaryOverlay();
 
-  // Panneau bas (mêmes actions)
+  // Panneau bas
   endCard.querySelectorAll('[data-frac]').forEach(b=> b.onclick=()=>{ if(session.finished) return; session.frac=+b.getAttribute('data-frac'); updateDistanceOutput(); updateDistanceOutputOverlay(); });
   qs('#finishRunner').onclick=()=> { showEnd(); };
 
@@ -664,7 +661,7 @@
     showSummaryOverlay();
   }
 
-  // ===== Bilan / QR + MODE PROF =====
+  // Bilan / QR + MODE PROF
   const backToCourseBtn=qs('#backToCourse'); const backHome2Btn=qs('#backHome2'); const goSummaryBtn=qs('#goSummary');
   let summaryData = []; let profMode = false;
 
@@ -673,7 +670,6 @@
       nom: d.nom, prenom: d.prenom, classe: d.classe, sexe: d.sexe,
       distance: d.distance, nb0: d.nb0, nb6: d.nb6, nb7: d.nb7, nb8: d.nb8, nb9: d.nb9, nb10: d.nb10, indice_arc: d.indice_arc
     }));
-  }));
   }
   function buildQR(payload){
     const qrBox=document.getElementById('qr');
@@ -800,9 +796,8 @@
   qs('#backToCourse').onclick=()=> show('course');
   qs('#backHome2').onclick=()=> { if(confirmLeaveIfNeeded()) show('cover'); };
 
-  // ===== Init =====
+  // Init
   validate();
-  // Sanity check (console)
   try{ console.assert(!!V.cover && !!V.duo && !!V.course && !!V.summary, 'vues ok'); }catch(_){ }
   </script>
 </body>
