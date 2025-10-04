@@ -59,11 +59,13 @@
   .lock *{pointer-events:none; opacity:.7}
   .shot-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:8px}
 
+  /* Accueil */
   #view-cover{min-height:calc(100vh - 56px); display:flex; align-items:center; justify-content:center;}
   .cover-stack{display:flex; flex-direction:column; gap:16px; align-items:center;}
   .substack{display:flex; gap:12px; flex-wrap:wrap; justify-content:center;}
   .tagline{color:var(--muted)}
 
+  /* Modales */
   .modal{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:50;
     background:linear-gradient(180deg,rgba(2,6,23,.55),rgba(2,6,23,.35));}
   .modal-card{background:#fff; border-radius:20px; max-width:900px; width:92%; overflow:hidden; box-shadow:0 12px 48px rgba(2,6,23,.25)}
@@ -76,30 +78,23 @@
   .help-list{margin:8px 0 12px; line-height:1.55}
   .help-list li{margin:6px 0}
 
-  /* Overlay fin (comme LaserRun) */
-  #endOverlay{
-    position:fixed; inset:0; display:none; z-index:60;
-    align-items:center; justify-content:center;
-    background:rgba(2,6,23,.55);
-  }
+  /* Overlays fin & bilan */
+  #endOverlay{position:fixed; inset:0; display:none; z-index:60; align-items:center; justify-content:center; background:rgba(2,6,23,.55);}
   #endOverlay.show{display:flex;}
-  .end-card{
-    background:#fff; border-radius:20px; padding:20px; width:min(720px,92%);
-    box-shadow:0 12px 48px rgba(2,6,23,.25); text-align:center;
-  }
+  #summaryOverlay{position:fixed; inset:0; display:none; z-index:60; align-items:center; justify-content:center; background:rgba(2,6,23,.55);} 
+  #summaryOverlay.show{display:flex;}
+  .end-card{background:#fff; border-radius:20px; padding:20px; width:min(720px,92%); box-shadow:0 12px 48px rgba(2,6,23,.25); text-align:center;}
   .end-card h3{margin-top:0}
   .end-note{color:var(--muted); margin-top:8px}
 
-  /* Encadrés stats tir */
-  .statsBox{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center;
-    border:2px solid #e5e7eb; border-radius:14px; padding:10px; background:#fff;}
+  /* Encadrés stats tir + pastilles */
+  .statsBox{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center; border:2px solid #e5e7eb; border-radius:14px; padding:10px; background:#fff;}
   .stat{display:flex; gap:8px; align-items:center; font-weight:800; padding:8px 12px; border-radius:12px; border:1px solid transparent}
   .stat.allowed{background:rgba(10,88,255,.10); color:#0a58ff; border-color:rgba(10,88,255,.25)}
   .stat.tired{background:rgba(124,58,237,.10); color:#7c3aed; border-color:rgba(124,58,237,.25)}
   .stat.remain{background:rgba(34,197,94,.12); color:#15803d; border-color:rgba(34,197,94,.25)}
 
-  .summaryBox{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center;
-    border:2px dashed #e5e7eb; border-radius:12px; padding:10px; background:#fff; margin-top:10px}
+  .summaryBox{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center; border:2px dashed #e5e7eb; border-radius:12px; padding:10px; background:#fff; margin-top:10px}
   .sumchip{display:inline-flex; gap:6px; align-items:center; padding:6px 10px; border-radius:999px; font-weight:800}
   .sumchip.indice{background:rgba(10,88,255,.10); color:#0a58ff}
   .sumchip.chip10{background:rgba(34,197,94,.12); color:#14532d}
@@ -108,10 +103,6 @@
   .sumchip.chip7{background:rgba(245,158,11,.15); color:#7c2d12}
   .sumchip.chip6{background:rgba(244,63,94,.10); color:#9f1239}
   .sumchip.chip0{background:rgba(239,68,68,.12); color:#7f1d1d}
-
-  /* Overlay bilan prêt */
-  #summaryOverlay{position:fixed; inset:0; display:none; z-index:60; align-items:center; justify-content:center; background:rgba(2,6,23,.55);} 
-  #summaryOverlay.show{display:flex;}
 </style>
 </head>
 <body>
@@ -129,6 +120,7 @@
         <div class="substack">
           <button class="b-slate" id="btnHelp">ℹ️ Aide</button>
           <button class="b-amber" id="btnSafety">🛟 Fiche sécurité</button>
+          <button class="b-slate" id="btnIndiceArc">🎯 Indice arc</button>
         </div>
       </div>
     </section>
@@ -178,6 +170,25 @@
           <li>Flux séparés (sens de circulation). On <strong>attend son tour</strong> dans la zone d’attente.</li>
           <li>Respect mutuel : pas de dépassement agressif, vigilance aux croisements.</li>
         </ul>
+        <div class="btns"><button class="b-slate" data-close>Fermer</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale Indice arc (explications) -->
+  <div class="modal hidden" id="modalIndice">
+    <div class="modal-card">
+      <div class="modal-head indice"><span>🎯</span><span>Indice arc — Explications</span></div>
+      <div class="modal-body">
+        <p><strong>But :</strong> mesurer la précision au tir, de 0 à 100%.</p>
+        <p><strong>Scores possibles par flèche :</strong> 0, 6, 7, 8, 9, 10.</p>
+        <p><strong>Calcul :</strong> on fait la moyenne des points sur 10, puis on passe sur 100.</p>
+        <ul class="help-list">
+          <li>Total flèches T = nb0 + nb6 + nb7 + nb8 + nb9 + nb10</li>
+          <li>Total points P = 0×nb0 + 6×nb6 + 7×nb7 + 8×nb8 + 9×nb9 + 10×nb10</li>
+          <li><b>Indice arc (%) = (P / T) ÷ 10 × 100</b> (arrondi à 2 décimales)</li>
+        </ul>
+        <p class="muted">Exemple : 4×10, 4×9, 2×8 ⇒ P=92 pour 10 flèches ⇒ 92%.</p>
         <div class="btns"><button class="b-slate" data-close>Fermer</button></div>
       </div>
     </div>
@@ -377,7 +388,8 @@
 
       <div class="card prof-tools">
         <div class="prof-row" style="display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap">
-          <input id="profCode" type="password" inputmode="numeric" placeholder="Entrer code Prof (57)"/>
+          <!-- IMPORTANT : placeholder neutre, code non affiché -->
+          <input id="profCode" type="password" inputmode="numeric" placeholder="Entrer code Prof"/>
           <button class="b-slate" id="activateProf">🔓 Activer mode Prof</button>
           <button class="b-amber" id="deactivateProf" disabled>🔒 Désactiver</button>
           <button class="b-violet" id="applyEdits" disabled>💾 Mettre à jour QR/CSV</button>
@@ -399,21 +411,31 @@
     <div>Arcathlon - Équipe EPS Lycée Vauban - LUXEMBOURG - JB</div>
   </footer>
 
-  <!-- QRCode lib -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- QRCode lib (non bloquante + tolère l'échec CDN) -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+          onerror="window.QRCode=undefined"></script>
 
   <script>
   'use strict';
+
+  /* ========= Réglages prof =========
+     Modifie la valeur ci-dessous pour changer le code Prof.
+     Rien n'est affiché dans l'interface.
+  */
+  const PROF_CODE = '57';
+
   // Helpers & navigation
   function qs(sel){ return document.querySelector(sel); }
   const V = { cover: qs('#view-cover'), duo: qs('#view-duo'), course: qs('#view-course'), summary: qs('#view-summary') };
   function show(name){ Object.values(V).forEach(v=>v.classList.add('hidden')); V[name].classList.remove('hidden'); window.scrollTo(0,0); }
   qs('#btnStart').onclick = ()=> show('duo');
 
+  // Modales
   function openModal(id){ document.getElementById(id).classList.remove('hidden'); }
   function closeModals(){ document.querySelectorAll('.modal').forEach(m=>m.classList.add('hidden')); }
   document.getElementById('btnHelp').onclick = ()=> openModal('modalHelp');
   document.getElementById('btnSafety').onclick = ()=> openModal('modalSafety');
+  document.getElementById('btnIndiceArc').onclick = ()=> openModal('modalIndice');
   document.querySelectorAll('.modal [data-close]').forEach(b=> b.onclick = closeModals);
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModals(); });
 
@@ -596,11 +618,11 @@
     session.shots.forEach(s=>{ if(c.hasOwnProperty(s.score)) c[s.score]++; });
     return c;
   }
-  function sumScores(){ return session.shots.reduce((a,b)=>a+(b?.score||0),0); }
+  function sumScores(){ return session.shots.reduce((a,b)=> a + ((b && b.score) || 0), 0); } // pas d'optional chaining
   function computeIndiceArc(){
     const T=session.shots.length;
     if(!T) return 0;
-    const avg = sumScores()/T; // moyenne sur 0..10
+    const avg = sumScores()/T; // moyenne sur 10
     return +(avg*10).toFixed(2); // en %
   }
   function renderAllSummaries(){
@@ -674,7 +696,7 @@
   function buildQR(payload){
     const qrBox=document.getElementById('qr');
     qrBox.innerHTML='';
-    try{ new QRCode(qrBox,{ text:payload, width:256, height:256, correctLevel:QRCode.CorrectLevel.M }); }
+    try{ if(window.QRCode){ new QRCode(qrBox,{ text:payload, width:256, height:256, correctLevel:QRCode.CorrectLevel.M }); } }
     catch(e){ console.warn('QR non généré:', e); }
   }
 
@@ -743,8 +765,8 @@
     const apply = document.getElementById('applyEdits');
     act.disabled = profMode; deact.disabled = !profMode; apply.disabled = !profMode;
     profHint.textContent = profMode
-      ? 'Mode Prof activé : corrigez (distance, nb6..nb10) puis “Mettre à jour QR/CSV”. Indice recalculé.'
-      : 'Saisir le code 57 pour corriger une valeur (distance, nb6..nb10).';
+      ? 'Mode Prof activé : corrigez (distance, nb0..nb10) puis “Mettre à jour QR/CSV”. Indice recalculé.'
+      : 'Saisir votre code Prof pour corriger une valeur.';
   }
 
   function parseEditsFromTable(){
@@ -771,7 +793,7 @@
 
   document.getElementById('activateProf').onclick = ()=>{
     const code = (document.getElementById('profCode').value||'').trim();
-    if(code === '57'){ profMode = true; renderSummary(); } else { alert('Code incorrect.'); }
+    if(code === PROF_CODE){ profMode = true; renderSummary(); } else { alert('Code incorrect.'); }
   };
   document.getElementById('deactivateProf').onclick = ()=>{ profMode = false; renderSummary(); };
   document.getElementById('applyEdits').onclick = ()=>{
