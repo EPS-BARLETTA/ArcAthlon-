@@ -105,12 +105,13 @@
   .sumchip.chip6{background:rgba(244,63,94,.10); color:#9f1239}
   .sumchip.chip0{background:rgba(239,68,68,.12); color:#7f1d1d}
 
-  /* Conseils persistants */
-  .adviceWrap{margin-top:10px; border:2px solid var(--adviceRing); background:var(--adviceBg); border-radius:14px; padding:10px 12px}
-  .adviceHead{display:flex; align-items:center; gap:8px; font-weight:800; color:var(--adviceBadge);}
-  .adviceTxt{margin-top:6px; color:#0b1220; text-align:left}
-  .adviceOpts{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:8px}
-  .miniSwitch{display:flex; align-items:center; gap:6px; background:#eef2ff; border:1px solid #dbeafe; padding:6px 10px; border-radius:999px; font-size:14px}
+  /* CONSEIL CENTRAL (remplace l'ancien bloc de validation/options) */
+  .adviceCenter{
+    margin-top:10px; border:2px solid var(--adviceRing); background:var(--adviceBg);
+    border-radius:16px; padding:14px 16px; text-align:center;
+  }
+  .adviceBadge{display:inline-block; padding:6px 10px; border-radius:999px; font-weight:800; color:#fff; background:var(--adviceBadge);}
+  .adviceText{margin-top:8px; font-size:16px; color:#0b1220}
 </style>
 </head>
 <body>
@@ -308,11 +309,10 @@
             <div class="stat remain">Restantes : <span id="remain">0</span></div>
           </div>
 
-          <!-- Conseils : options -->
-          <div class="adviceOpts" id="adviceOptions">
-            <label class="miniSwitch"><input type="checkbox" id="advEnabled" checked> Activer les conseils</label>
-            <label class="miniSwitch"><input type="checkbox" id="advPerShot" checked> Après chaque flèche</label>
-            <label class="miniSwitch"><input type="checkbox" id="advEnd" checked> En fin de course</label>
+          <!-- CONSEIL CENTRAL (à la place des anciens boutons d'options) -->
+          <div class="adviceCenter" id="adviceCenter">
+            <span class="adviceBadge">Conseil</span>
+            <div class="adviceText" id="adviceTxt">— aucun conseil pour le moment —</div>
           </div>
 
           <!-- Boutons de saisie -->
@@ -334,12 +334,6 @@
             <span class="sumchip chip6">Nb 6 : <b id="c6">0</b></span>
             <span class="sumchip chip0">Nb 0 : <b id="c0">0</b></span>
             <span class="sumchip indice">Indice arc : <b id="indiceArc">0</b>%</span>
-          </div>
-
-          <!-- Conseils persistants (affichage) -->
-          <div class="adviceWrap" id="adviceWrap">
-            <div class="adviceHead">💡 Conseil (reste affiché jusqu’à la prochaine flèche ou la fin) </div>
-            <div class="adviceTxt" id="adviceTxt">— aucun conseil pour le moment —</div>
           </div>
 
           <!-- Détails tirs -->
@@ -522,14 +516,10 @@
   const shotsTable=qs('#shotsTable'), runnerTitle=qs('#runnerTitle'), courseMeta=qs('#courseMeta');
   const endCard=qs('#endCard'), distanceOut=qs('#distanceOut'), courseCard=qs('#courseCard');
   const toSummaryWrap=qs('#toSummaryWrap'); const liveDistanceEl=qs('#liveDistance');
-  const allowedEl=qs('#allowed'), shotCountEl=qs('#shotCount'), remainEl=qs('#remain');
+  const allowedEl=qs('#allowed'), shotCountEl=qs('#shotCount'), remainEl=qs('#remain']);
   const indiceArcEl=qs('#indiceArc');
   const c0El=qs('#c0'), c6El=qs('#c6'), c7El=qs('#c7'), c8El=qs('#c8'), c9El=qs('#c9'), c10El=qs('#c10');
-  // Conseils
   const adviceTxt = qs('#adviceTxt');
-  const advEnabledEl = qs('#advEnabled');
-  const advPerShotEl = qs('#advPerShot');
-  const advEndEl = qs('#advEnd');
 
   // Choix coureur
   qs('#pickP1').onclick=()=> switchRunner('p1');
@@ -547,10 +537,8 @@
       const allowed = calcAllowedShots();
       if(session.shots.length>=allowed){ alert('Pas assez de tours pour tirer plus de flèches.'); return; }
       addShot(score);
-      // Conseil par flèche (persiste)
-      if(advEnabledEl.checked && advPerShotEl.checked){
-        setAdvice(generateAdvice('shot'));
-      }
+      // Conseil APRES CHAQUE TIR (persiste jusqu'au prochain évènement)
+      setAdvice(generateAdvice('shot'));
     };
   });
 
@@ -559,7 +547,7 @@
   function start(){ if(session.finished||running) return; running=true; t0=Date.now()-elapsed; timer=setInterval(tick,100); qs('#btnStartCourse').disabled=true; qs('#btnPause').disabled=false; qs('#btnReset').disabled=false; }
   function pause(){ if(!running) return; running=false; clearInterval(timer); qs('#btnStartCourse').disabled=false; qs('#btnPause').disabled=true; }
   function reset(){ pause(); elapsed=0; clockEl.textContent='00:00.0'; qs('#btnReset').disabled=true; session.laps=0; session.shots=[]; session.frac=0; renderLaps(); renderAllowances(); renderShots(); renderAllSummaries(); hideEnd(); /* NE PAS effacer le conseil ici */ }
-  function tick(){ elapsed=Date.now()-t0; const cs=Math.floor(elapsed/100); const m=Math.floor(cs/600), s=Math.floor((cs%600)/10), d=cs%10; clockEl.textContent=`${m<10?'0':''}${m}:${s<10?'0':''}${s}.${d}`; if(m>=session.dureeMin){ pause(); showEnd(); if(advEnabledEl.checked && advEndEl.checked){ setAdvice(generateAdvice('end')); } } }
+  function tick(){ elapsed=Date.now()-t0; const cs=Math.floor(elapsed/100); const m=Math.floor(cs/600), s=Math.floor((cs%600)/10), d=cs%10; clockEl.textContent=`${m<10?'0':''}${m}:${s<10?'0':''}${s}.${d}`; if(m>=session.dureeMin){ pause(); showEnd(); /* Conseil EN FIN DE COURS */ setAdvice(generateAdvice('end')); } }
   qs('#btnStartCourse').onclick=start; qs('#btnPause').onclick=pause; qs('#btnReset').onclick=reset;
 
   // Fin (overlay)
@@ -659,7 +647,7 @@
     indiceArcEl.textContent = computeIndiceArc();
   }
 
-  // === CONSEILS (génération + persistance) ===
+  // === CONSEILS (texte central) ===
   function setAdvice(text){
     adviceTxt.textContent = text && text.trim().length ? text : '— aucun conseil pour le moment —';
   }
@@ -675,7 +663,6 @@
       if (last >= 9) tips.push("Très bien ! Garde la même routine (ancrage → visée → lâcher).");
       if (last <= 6) tips.push("Prends un peu plus de temps à l'ancrage et déclenche proprement.");
     }
-
     if (c[0] >= 2) tips.push("Plusieurs 0 : vérifie sécurité et alignement, vise le jaune sans chercher le centre absolu.");
     if (c[10] >= Math.max(2, Math.ceil(T*0.4))) tips.push("Beaucoup de 10 : si c'est facile, augmente légèrement la distance la prochaine fois.");
     if (indice < 60) tips.push("Travaille la stabilité : pieds ancrés, épaules relâchées, traction régulière.");
@@ -694,7 +681,7 @@
     resetRunnerState();
     paintCourseHeader();
     loadTemp();
-    // NE PAS effacer le dernier conseil ici : il reste jusqu'à la prochaine flèche / fin.
+    // Conseil persistant : on NE l'efface pas ici
   }
   function resetRunnerState(){ session.laps=0; session.shots=[]; session.frac=0; renderLaps(); renderAllowances(); renderShots(); renderAllSummaries(); hideEnd(); }
   function paintCourseHeader(){
@@ -727,7 +714,7 @@
 
     const other=session.active==='p1'?'p2':'p1';
     if(!session.results[other]){
-      if(advEnabledEl.checked && advEndEl.checked){ setAdvice(generateAdvice('end')); }
+      setAdvice(generateAdvice('end'));
       alert('Coureur terminé. Passez au second coureur.');
       switchRunner(other);
       return;
@@ -737,7 +724,7 @@
     document.getElementById('pickP2').disabled=true;
     toSummaryWrap.classList.remove('hidden');
     showSummaryOverlay();
-    if(advEnabledEl.checked && advEndEl.checked){ setAdvice(generateAdvice('end')); }
+    setAdvice(generateAdvice('end'));
   }
 
   // Bilan / QR + MODE PROF
