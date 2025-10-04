@@ -1,0 +1,1 @@
+Fix: corrected a JS syntax error in remainEl assignment that prevented all click handlers from binding.
