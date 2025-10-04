@@ -543,10 +543,12 @@
 
   // Overlay bilan prêt
   const summaryOverlay = document.getElementById('summaryOverlay');
-  function showSummaryOverlay(){ summaryOverlay.classList.add('show'); if(navigator.vibrate) navigator.vibrate(120); }
-  function hideSummaryOverlay(){ summaryOverlay.classList.remove('show'); }
-  document.getElementById('overlayGoSummary').onclick=()=>{ hideSummaryOverlay(); document.getElementById('goSummary').click(); };
-  document.getElementById('overlayCloseSummary').onclick=()=> hideSummaryOverlay();
+  function showSummaryOverlay(){ if(summaryOverlay){ summaryOverlay.classList.add('show'); if(navigator.vibrate) navigator.vibrate(120); } }
+  function hideSummaryOverlay(){ if(summaryOverlay){ summaryOverlay.classList.remove('show'); } }
+  const overlayGoBtn = document.getElementById('overlayGoSummary');
+  if(overlayGoBtn) overlayGoBtn.onclick = ()=>{ hideSummaryOverlay(); document.getElementById('goSummary')?.click(); };
+  const overlayCloseBtn = document.getElementById('overlayCloseSummary');
+  if(overlayCloseBtn) overlayCloseBtn.onclick = ()=> hideSummaryOverlay();
 
   // Panneau bas (mêmes actions)
   endCard.querySelectorAll('[data-frac]').forEach(b=> b.onclick=()=>{ if(session.finished) return; session.frac=+b.getAttribute('data-frac'); updateDistanceOutput(); updateDistanceOutputOverlay(); });
@@ -800,6 +802,8 @@
 
   // ===== Init =====
   validate();
+  // Sanity check (console)
+  try{ console.assert(!!V.cover && !!V.duo && !!V.course && !!V.summary, 'vues ok'); }catch(_){ }
   </script>
 </body>
 </html>
