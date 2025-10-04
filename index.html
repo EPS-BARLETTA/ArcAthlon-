@@ -13,6 +13,7 @@
     --green:#22c55e; --amber:#f59e0b; --red:#ef4444; --violet:#7c3aed; --slate:#334155;
     --radius:16px; --ring:0 8px 40px rgba(2,6,23,.08);
     --panel1:#e8f1ff; --panel2:#e9fbe8; --band:#eef2f7;
+    --adviceRing:#dbeafe; --adviceBg:#eff6ff; --adviceBadge:#1d4ed8;
   }
   *{box-sizing:border-box}
   body{
@@ -103,6 +104,13 @@
   .sumchip.chip7{background:rgba(245,158,11,.15); color:#7c2d12}
   .sumchip.chip6{background:rgba(244,63,94,.10); color:#9f1239}
   .sumchip.chip0{background:rgba(239,68,68,.12); color:#7f1d1d}
+
+  /* Conseils persistants */
+  .adviceWrap{margin-top:10px; border:2px solid var(--adviceRing); background:var(--adviceBg); border-radius:14px; padding:10px 12px}
+  .adviceHead{display:flex; align-items:center; gap:8px; font-weight:800; color:var(--adviceBadge);}
+  .adviceTxt{margin-top:6px; color:#0b1220; text-align:left}
+  .adviceOpts{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:8px}
+  .miniSwitch{display:flex; align-items:center; gap:6px; background:#eef2ff; border:1px solid #dbeafe; padding:6px 10px; border-radius:999px; font-size:14px}
 </style>
 </head>
 <body>
@@ -300,6 +308,13 @@
             <div class="stat remain">Restantes : <span id="remain">0</span></div>
           </div>
 
+          <!-- Conseils : options -->
+          <div class="adviceOpts" id="adviceOptions">
+            <label class="miniSwitch"><input type="checkbox" id="advEnabled" checked> Activer les conseils</label>
+            <label class="miniSwitch"><input type="checkbox" id="advPerShot" checked> Après chaque flèche</label>
+            <label class="miniSwitch"><input type="checkbox" id="advEnd" checked> En fin de course</label>
+          </div>
+
           <!-- Boutons de saisie -->
           <div class="shot-grid" id="scoreButtons" style="margin-top:10px">
             <button class="b-slate" data-score="0">0</button>
@@ -319,6 +334,12 @@
             <span class="sumchip chip6">Nb 6 : <b id="c6">0</b></span>
             <span class="sumchip chip0">Nb 0 : <b id="c0">0</b></span>
             <span class="sumchip indice">Indice arc : <b id="indiceArc">0</b>%</span>
+          </div>
+
+          <!-- Conseils persistants (affichage) -->
+          <div class="adviceWrap" id="adviceWrap">
+            <div class="adviceHead">💡 Conseil (reste affiché jusqu’à la prochaine flèche ou la fin) </div>
+            <div class="adviceTxt" id="adviceTxt">— aucun conseil pour le moment —</div>
           </div>
 
           <!-- Détails tirs -->
@@ -418,10 +439,7 @@
   <script>
   'use strict';
 
-  /* ========= Réglages prof =========
-     Modifie la valeur ci-dessous pour changer le code Prof.
-     Rien n'est affiché dans l'interface.
-  */
+  /* ========= Réglages prof ========= */
   const PROF_CODE = '57';
 
   // Helpers & navigation
@@ -507,7 +525,12 @@
   const allowedEl=qs('#allowed'), shotCountEl=qs('#shotCount'), remainEl=qs('#remain');
   const indiceArcEl=qs('#indiceArc');
   const c0El=qs('#c0'), c6El=qs('#c6'), c7El=qs('#c7'), c8El=qs('#c8'), c9El=qs('#c9'), c10El=qs('#c10');
-  
+  // Conseils
+  const adviceTxt = qs('#adviceTxt');
+  const advEnabledEl = qs('#advEnabled');
+  const advPerShotEl = qs('#advPerShot');
+  const advEndEl = qs('#advEnd');
+
   // Choix coureur
   qs('#pickP1').onclick=()=> switchRunner('p1');
   qs('#pickP2').onclick=()=> switchRunner('p2');
@@ -524,6 +547,10 @@
       const allowed = calcAllowedShots();
       if(session.shots.length>=allowed){ alert('Pas assez de tours pour tirer plus de flèches.'); return; }
       addShot(score);
+      // Conseil par flèche (persiste)
+      if(advEnabledEl.checked && advPerShotEl.checked){
+        setAdvice(generateAdvice('shot'));
+      }
     };
   });
 
@@ -531,8 +558,8 @@
   let t0=0, elapsed=0, timer=null, running=false;
   function start(){ if(session.finished||running) return; running=true; t0=Date.now()-elapsed; timer=setInterval(tick,100); qs('#btnStartCourse').disabled=true; qs('#btnPause').disabled=false; qs('#btnReset').disabled=false; }
   function pause(){ if(!running) return; running=false; clearInterval(timer); qs('#btnStartCourse').disabled=false; qs('#btnPause').disabled=true; }
-  function reset(){ pause(); elapsed=0; clockEl.textContent='00:00.0'; qs('#btnReset').disabled=true; session.laps=0; session.shots=[]; session.frac=0; renderLaps(); renderAllowances(); renderShots(); renderAllSummaries(); hideEnd(); }
-  function tick(){ elapsed=Date.now()-t0; const cs=Math.floor(elapsed/100); const m=Math.floor(cs/600), s=Math.floor((cs%600)/10), d=cs%10; clockEl.textContent=`${m<10?'0':''}${m}:${s<10?'0':''}${s}.${d}`; if(m>=session.dureeMin){ pause(); showEnd(); } }
+  function reset(){ pause(); elapsed=0; clockEl.textContent='00:00.0'; qs('#btnReset').disabled=true; session.laps=0; session.shots=[]; session.frac=0; renderLaps(); renderAllowances(); renderShots(); renderAllSummaries(); hideEnd(); /* NE PAS effacer le conseil ici */ }
+  function tick(){ elapsed=Date.now()-t0; const cs=Math.floor(elapsed/100); const m=Math.floor(cs/600), s=Math.floor((cs%600)/10), d=cs%10; clockEl.textContent=`${m<10?'0':''}${m}:${s<10?'0':''}${s}.${d}`; if(m>=session.dureeMin){ pause(); showEnd(); if(advEnabledEl.checked && advEndEl.checked){ setAdvice(generateAdvice('end')); } } }
   qs('#btnStartCourse').onclick=start; qs('#btnPause').onclick=pause; qs('#btnReset').onclick=reset;
 
   // Fin (overlay)
@@ -618,18 +645,45 @@
     session.shots.forEach(s=>{ if(c.hasOwnProperty(s.score)) c[s.score]++; });
     return c;
   }
-  function sumScores(){ return session.shots.reduce((a,b)=> a + ((b && b.score) || 0), 0); } // pas d'optional chaining
+  function sumScores(){ return session.shots.reduce((a,b)=> a + ((b && b.score) || 0), 0); }
   function computeIndiceArc(){
     const T=session.shots.length;
     if(!T) return 0;
-    const avg = sumScores()/T; // moyenne sur 10
-    return +(avg*10).toFixed(2); // en %
+    const avg = sumScores()/T;
+    return +(avg*10).toFixed(2);
   }
   function renderAllSummaries(){
     const c=scoreCounts();
     c0El.textContent=c[0];
     c6El.textContent=c[6]; c7El.textContent=c[7]; c8El.textContent=c[8]; c9El.textContent=c[9]; c10El.textContent=c[10];
     indiceArcEl.textContent = computeIndiceArc();
+  }
+
+  // === CONSEILS (génération + persistance) ===
+  function setAdvice(text){
+    adviceTxt.textContent = text && text.trim().length ? text : '— aucun conseil pour le moment —';
+  }
+  function generateAdvice(context){
+    const c = scoreCounts();
+    const T = session.shots.length;
+    const indice = computeIndiceArc();
+    const tips = [];
+
+    if (context === 'shot' && T > 0) {
+      const last = session.shots[session.shots.length-1].score;
+      if (last === 0) tips.push("Reset mental : posture stable, respiration, vise large pour retrouver des points.");
+      if (last >= 9) tips.push("Très bien ! Garde la même routine (ancrage → visée → lâcher).");
+      if (last <= 6) tips.push("Prends un peu plus de temps à l'ancrage et déclenche proprement.");
+    }
+
+    if (c[0] >= 2) tips.push("Plusieurs 0 : vérifie sécurité et alignement, vise le jaune sans chercher le centre absolu.");
+    if (c[10] >= Math.max(2, Math.ceil(T*0.4))) tips.push("Beaucoup de 10 : si c'est facile, augmente légèrement la distance la prochaine fois.");
+    if (indice < 60) tips.push("Travaille la stabilité : pieds ancrés, épaules relâchées, traction régulière.");
+    else if (indice < 80) tips.push("C'est en progrès : garde un rythme constant, concentre-toi sur un lâcher propre.");
+    else tips.push("Excellent groupement : reproduis ta routine et pense au suivi de flèche.");
+
+    if (context === 'end') tips.unshift("Fin de course : hydrate-toi, fais un reset et note ce qui a fonctionné.");
+    return tips.join(" ");
   }
 
   function switchRunner(which){
@@ -640,6 +694,7 @@
     resetRunnerState();
     paintCourseHeader();
     loadTemp();
+    // NE PAS effacer le dernier conseil ici : il reste jusqu'à la prochaine flèche / fin.
   }
   function resetRunnerState(){ session.laps=0; session.shots=[]; session.frac=0; renderLaps(); renderAllowances(); renderShots(); renderAllSummaries(); hideEnd(); }
   function paintCourseHeader(){
@@ -672,6 +727,7 @@
 
     const other=session.active==='p1'?'p2':'p1';
     if(!session.results[other]){
+      if(advEnabledEl.checked && advEndEl.checked){ setAdvice(generateAdvice('end')); }
       alert('Coureur terminé. Passez au second coureur.');
       switchRunner(other);
       return;
@@ -681,6 +737,7 @@
     document.getElementById('pickP2').disabled=true;
     toSummaryWrap.classList.remove('hidden');
     showSummaryOverlay();
+    if(advEnabledEl.checked && advEndEl.checked){ setAdvice(generateAdvice('end')); }
   }
 
   // Bilan / QR + MODE PROF
@@ -820,6 +877,7 @@
 
   // Init
   validate();
+  setAdvice(''); // init conseil
   try{ console.assert(!!V.cover && !!V.duo && !!V.course && !!V.summary, 'vues ok'); }catch(_){ }
   </script>
 </body>
