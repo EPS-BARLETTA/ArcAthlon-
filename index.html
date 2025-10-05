@@ -16,16 +16,11 @@
     --adviceRing:#dbeafe; --adviceBg:#eff6ff; --adviceBadge:#1d4ed8;
   }
   *{box-sizing:border-box}
-  body{
-    margin:0;background:var(--bg);color:var(--ink);
+  body{ margin:0;background:var(--bg);color:var(--ink);
     font:16px/1.4 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-    min-height:100vh; display:flex; flex-direction:column; padding-bottom:56px;
-  }
-  footer{
-    position:fixed; left:0; right:0; bottom:0;
-    border-top:1px solid #e5e7eb; color:var(--muted);
-    text-align:center; padding:10px 0; background:#fff;
-  }
+    min-height:100vh; display:flex; flex-direction:column; padding-bottom:56px; }
+  footer{ position:fixed; left:0; right:0; bottom:0; border-top:1px solid #e5e7eb; color:var(--muted);
+    text-align:center; padding:10px 0; background:#fff; }
   .shell{max-width:980px;margin:0 auto;padding:16px}
   h1{font-size:clamp(22px,3.4vw,32px);margin:8px 0 4px;font-weight:800;text-align:center}
   h2{font-size:clamp(20px,2.8vw,28px);margin:8px 0 12px;font-weight:800;text-align:center}
@@ -59,14 +54,10 @@
   th,td{padding:12px;border-bottom:1px solid #e5e7eb;text-align:center;font-size:16px}
   .lock *{pointer-events:none; opacity:.7}
   .shot-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:8px}
-
-  /* Accueil */
   #view-cover{min-height:calc(100vh - 56px); display:flex; align-items:center; justify-content:center;}
   .cover-stack{display:flex; flex-direction:column; gap:16px; align-items:center;}
   .substack{display:flex; gap:12px; flex-wrap:wrap; justify-content:center;}
   .tagline{color:var(--muted)}
-
-  /* Modales */
   .modal{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index:50;
     background:linear-gradient(180deg,rgba(2,6,23,.55),rgba(2,6,23,.35));}
   .modal-card{background:#fff; border-radius:20px; max-width:900px; width:92%; overflow:hidden; box-shadow:0 12px 48px rgba(2,6,23,.25)}
@@ -78,8 +69,6 @@
   .modal-body h4{margin:12px 0 6px}
   .help-list{margin:8px 0 12px; line-height:1.55}
   .help-list li{margin:6px 0}
-
-  /* Overlays fin & bilan */
   #endOverlay{position:fixed; inset:0; display:none; z-index:60; align-items:center; justify-content:center; background:rgba(2,6,23,.55);}
   #endOverlay.show{display:flex;}
   #summaryOverlay{position:fixed; inset:0; display:none; z-index:60; align-items:center; justify-content:center; background:rgba(2,6,23,.55);} 
@@ -87,14 +76,11 @@
   .end-card{background:#fff; border-radius:20px; padding:20px; width:min(720px,92%); box-shadow:0 12px 48px rgba(2,6,23,.25); text-align:center;}
   .end-card h3{margin-top:0}
   .end-note{color:var(--muted); margin-top:8px}
-
-  /* Encadrés stats tir + pastilles */
   .statsBox{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center; border:2px solid #e5e7eb; border-radius:14px; padding:10px; background:#fff;}
   .stat{display:flex; gap:8px; align-items:center; font-weight:800; padding:8px 12px; border-radius:12px; border:1px solid transparent}
   .stat.allowed{background:rgba(10,88,255,.10); color:#0a58ff; border-color:rgba(10,88,255,.25)}
   .stat.tired{background:rgba(124,58,237,.10); color:#7c3aed; border-color:rgba(124,58,237,.25)}
   .stat.remain{background:rgba(34,197,94,.12); color:#15803d; border-color:rgba(34,197,94,.25)}
-
   .summaryBox{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; align-items:center; border:2px dashed #e5e7eb; border-radius:12px; padding:10px; background:#fff; margin-top:10px}
   .sumchip{display:inline-flex; gap:6px; align-items:center; padding:6px 10px; border-radius:999px; font-weight:800}
   .sumchip.indice{background:rgba(10,88,255,.10); color:#0a58ff}
@@ -104,18 +90,13 @@
   .sumchip.chip7{background:rgba(245,158,11,.15); color:#7c2d12}
   .sumchip.chip6{background:rgba(244,63,94,.10); color:#9f1239}
   .sumchip.chip0{background:rgba(239,68,68,.12); color:#7f1d1d}
-
-  /* CONSEIL CENTRAL (remplace l'ancien bloc de validation/options) */
-  .adviceCenter{
-    margin-top:10px; border:2px solid var(--adviceRing); background:var(--adviceBg);
-    border-radius:16px; padding:14px 16px; text-align:center;
-  }
-  .adviceBadge{display:inline-block; padding:6px 10px; border-radius:999px; font-weight:800; color:#fff; background:var(--adviceBadge);}
-  .adviceText{margin-top:8px; font-size:16px; color:#0b1220}
+  .adviceCenter{ margin-top:10px; border:2px solid var(--adviceRing); background:var(--adviceBg);
+    border-radius:16px; padding:12px 14px; text-align:center; }
+  .adviceBadge{display:inline-block; padding:4px 10px; border-radius:999px; font-weight:800; color:#fff; background:var(--adviceBadge); font-size:14px}
+  .adviceText{margin-top:6px; font-size:15px; color:#0b1220}
 </style>
 </head>
 <body>
-  <!-- Accueil -->
   <main class="shell" id="view-cover">
     <section class="card center" style="padding:28px 20px">
       <div class="cover-stack">
@@ -135,7 +116,6 @@
     </section>
   </main>
 
-  <!-- Modale Aide -->
   <div class="modal hidden" id="modalHelp">
     <div class="modal-card">
       <div class="modal-head help"><span>ℹ️</span><span>Mode d’emploi — Arcathlon</span></div>
@@ -152,58 +132,48 @@
     </div>
   </div>
 
-  <!-- Modale Fiche sécurité -->
   <div class="modal hidden" id="modalSafety">
     <div class="modal-card">
       <div class="modal-head safe"><span>🛟</span><span>Fiche sécurité — Arcathlon</span></div>
       <div class="modal-body">
         <h4>Avant l’activité</h4>
         <ul class="help-list">
-          <li>Vérifier la zone de course : tracé dégagé, surface adhérente, absence d’obstacles dangereux.</li>
-          <li>Installer un <strong>pas de tir matérialisé</strong> (ligne de tir + zone d’attente en retrait).</li>
-          <li>Contrôler arcs/flèches (état des branches, corde, empennage, pointes), EPI si nécessaires.</li>
+          <li>Zone de course dégagée, surface adhérente.</li>
+          <li>Pas de tir matérialisé + zone d’attente.</li>
+          <li>Contrôle arcs/flèches (état) et EPI si besoin.</li>
         </ul>
         <h4>Règles au pas de tir</h4>
         <ul class="help-list">
-          <li>Arc toujours dirigé vers les cibles. <strong>Ne jamais</strong> bander l’arc en dehors du pas de tir.</li>
-          <li>Tirer <strong>uniquement</strong> sur signal/autorisation ; <strong>personne</strong> devant la ligne de tir.</li>
-          <li>On cesse le tir immédiatement à tout signal d’arrêt ; poser les arcs, reculer d’un pas.</li>
+          <li>Arc vers les cibles. Jamais bander hors pas de tir.</li>
+          <li>Tir seulement sur signal ; personne devant la ligne.</li>
+          <li>Signal d’arrêt : poser l’arc, reculer.</li>
         </ul>
         <h4>Récupération des flèches</h4>
         <ul class="help-list">
-          <li>Récupération <strong>sur signal</strong> uniquement ; marche, pas de course devant les cibles.</li>
-          <li>Une main contre la cible pour la stabilité, l’autre retire la flèche dans l’axe ; vérifier qu’aucune personne n’est derrière.</li>
+          <li>Sur signal uniquement ; marche devant les cibles.</li>
+          <li>Main contre la cible, retrait dans l’axe.</li>
         </ul>
         <h4>Circulation course ↔ tir</h4>
         <ul class="help-list">
-          <li>Flux séparés (sens de circulation). On <strong>attend son tour</strong> dans la zone d’attente.</li>
-          <li>Respect mutuel : pas de dépassement agressif, vigilance aux croisements.</li>
+          <li>Flux séparés, on attend son tour, vigilance.</li>
         </ul>
         <div class="btns"><button class="b-slate" data-close>Fermer</button></div>
       </div>
     </div>
   </div>
 
-  <!-- Modale Indice arc (explications) -->
   <div class="modal hidden" id="modalIndice">
     <div class="modal-card">
       <div class="modal-head indice"><span>🎯</span><span>Indice arc — Explications</span></div>
       <div class="modal-body">
         <p><strong>But :</strong> mesurer la précision au tir, de 0 à 100%.</p>
-        <p><strong>Scores possibles par flèche :</strong> 0, 6, 7, 8, 9, 10.</p>
-        <p><strong>Calcul :</strong> on fait la moyenne des points sur 10, puis on passe sur 100.</p>
-        <ul class="help-list">
-          <li>Total flèches T = nb0 + nb6 + nb7 + nb8 + nb9 + nb10</li>
-          <li>Total points P = 0×nb0 + 6×nb6 + 7×nb7 + 8×nb8 + 9×nb9 + 10×nb10</li>
-          <li><b>Indice arc (%) = (P / T) ÷ 10 × 100</b> (arrondi à 2 décimales)</li>
-        </ul>
-        <p class="muted">Exemple : 4×10, 4×9, 2×8 ⇒ P=92 pour 10 flèches ⇒ 92%.</p>
+        <p><strong>Scores possibles :</strong> 0, 6, 7, 8, 9, 10.</p>
+        <p><strong>Indice :</strong> moyenne sur 10 → %.</p>
         <div class="btns"><button class="b-slate" data-close>Fermer</button></div>
       </div>
     </div>
   </div>
 
-  <!-- Saisie 2 coureurs -->
   <main class="shell hidden" id="view-duo">
     <section class="card">
       <h2>Saisie des informations</h2>
@@ -263,7 +233,6 @@
     </section>
   </main>
 
-  <!-- Course + Tir -->
   <main class="shell hidden" id="view-course">
     <section class="card center" id="courseCard">
       <div class="btns" style="margin-bottom:8px">
@@ -276,7 +245,6 @@
         <button class="b-green" id="pickP2">👟 Coureur 2</button>
       </div>
 
-      <!-- Chrono -->
       <div class="card" style="max-width:720px;margin:0 auto 12px">
         <div class="xl" id="clock">00:00.0</div>
         <div class="btns" style="margin-top:8px">
@@ -287,7 +255,6 @@
         <p class="muted">Durée cible : <strong id="target"></strong> min</p>
       </div>
 
-      <!-- Tours + Tir -->
       <div class="row" style="max-width:720px;margin:0 auto">
         <div class="card">
           <h3>🏁 Tours</h3>
@@ -301,21 +268,18 @@
         </div>
         <div class="card">
           <h3>🏹 Tir à l’arc (0, 6, 7, 8, 9, 10)</h3>
-
-          <!-- Encadré coloré flèches -->
           <div class="statsBox" id="shotsEncadre">
             <div class="stat allowed">Autorisées : <span id="allowed">0</span></div>
             <div class="stat tired">Tirées : <span id="shotCount">0</span></div>
             <div class="stat remain">Restantes : <span id="remain">0</span></div>
           </div>
 
-          <!-- CONSEIL CENTRAL (à la place des anciens boutons d'options) -->
+          <!-- Conseil central -->
           <div class="adviceCenter" id="adviceCenter">
             <span class="adviceBadge">Conseil</span>
             <div class="adviceText" id="adviceTxt">— aucun conseil pour le moment —</div>
           </div>
 
-          <!-- Boutons de saisie -->
           <div class="shot-grid" id="scoreButtons" style="margin-top:10px">
             <button class="b-slate" data-score="0">0</button>
             <button class="b-slate" data-score="6">6</button>
@@ -325,7 +289,6 @@
             <button class="b-slate" data-score="10">10</button>
           </div>
 
-          <!-- Résumé immédiat -->
           <div class="summaryBox" id="shootSummary">
             <span class="sumchip chip10">Nb 10 : <b id="c10">0</b></span>
             <span class="sumchip chip9">Nb 9 : <b id="c9">0</b></span>
@@ -336,7 +299,6 @@
             <span class="sumchip indice">Indice arc : <b id="indiceArc">0</b>%</span>
           </div>
 
-          <!-- Détails tirs -->
           <div style="overflow:auto;margin-top:8px">
             <table>
               <thead><tr><th>#</th><th>Score</th><th>Action</th></tr></thead>
@@ -346,7 +308,6 @@
         </div>
       </div>
 
-      <!-- Panneau fin + overlay -->
       <div class="card hidden" id="endCard" style="max-width:720px;margin:12px auto 0">
         <h3>⏱️ Temps écoulé — compléter la fraction de tour</h3>
         <div class="btns">
@@ -365,7 +326,6 @@
     </section>
   </main>
 
-  <!-- Overlay fin -->
   <div id="endOverlay" aria-modal="true" role="dialog">
     <div class="end-card">
       <h3>⏳ Temps écoulé</h3>
@@ -383,7 +343,6 @@
     </div>
   </div>
 
-  <!-- Overlay bilan prêt -->
   <div id="summaryOverlay" aria-modal="true" role="dialog">
     <div class="end-card">
       <h3>📊 Bilan prêt</h3>
@@ -395,7 +354,6 @@
     </div>
   </div>
 
-  <!-- Bilan / QR -->
   <main class="shell hidden" id="view-summary">
     <section class="card center">
       <h2>Bilan — QR compatible ScanProf</h2>
@@ -403,7 +361,6 @@
 
       <div class="card prof-tools">
         <div class="prof-row" style="display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap">
-          <!-- IMPORTANT : placeholder neutre, code non affiché -->
           <input id="profCode" type="password" inputmode="numeric" placeholder="Entrer code Prof"/>
           <button class="b-slate" id="activateProf">🔓 Activer mode Prof</button>
           <button class="b-amber" id="deactivateProf" disabled>🔒 Désactiver</button>
@@ -426,23 +383,19 @@
     <div>Arcathlon - Équipe EPS Lycée Vauban - LUXEMBOURG - JB</div>
   </footer>
 
-  <!-- QRCode lib (non bloquante + tolère l'échec CDN) -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
           onerror="window.QRCode=undefined"></script>
 
   <script>
   'use strict';
 
-  /* ========= Réglages prof ========= */
   const PROF_CODE = '57';
 
-  // Helpers & navigation
   function qs(sel){ return document.querySelector(sel); }
   const V = { cover: qs('#view-cover'), duo: qs('#view-duo'), course: qs('#view-course'), summary: qs('#view-summary') };
   function show(name){ Object.values(V).forEach(v=>v.classList.add('hidden')); V[name].classList.remove('hidden'); window.scrollTo(0,0); }
   qs('#btnStart').onclick = ()=> show('duo');
 
-  // Modales
   function openModal(id){ document.getElementById(id).classList.remove('hidden'); }
   function closeModals(){ document.querySelectorAll('.modal').forEach(m=>m.classList.add('hidden')); }
   document.getElementById('btnHelp').onclick = ()=> openModal('modalHelp');
@@ -451,7 +404,6 @@
   document.querySelectorAll('.modal [data-close]').forEach(b=> b.onclick = closeModals);
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModals(); });
 
-  // Quitter si en cours
   function confirmLeaveIfNeeded(){
     if(!session.finished && (session.laps>0 || session.shots.length>0 || elapsed>0)){
       return confirm('Quitter la course ? Les données non terminées pourraient être perdues.');
@@ -461,7 +413,6 @@
   qs('#goHome').onclick = ()=> { if(confirmLeaveIfNeeded()) show('cover'); };
   qs('#backToDuo').onclick = ()=> { if(confirmLeaveIfNeeded()) show('duo'); };
 
-  // Validation
   function clean(s){ return (s||'').replace(/\s+/g,' ').trim(); }
   function hasValue(id){ return clean(document.getElementById(id).value).length>0; }
   function okNumber(v,min){ const n=+v; return Number.isFinite(n)&&n>=min; }
@@ -491,7 +442,6 @@
   ['p1_prenom','p1_nom','p1_classe','p1_sexe','p2_prenom','p2_nom','p2_classe','p2_sexe','duree_min','tour_m','tours_bloc','fleches_bloc']
     .forEach(id=>{ const el=document.getElementById(id); el.addEventListener('input',validate); el.addEventListener('change',validate); });
 
-  // Presets règles
   function setRule(tb, fb){ document.getElementById('tours_bloc').value=tb; document.getElementById('fleches_bloc').value=fb; validate(); }
   document.getElementById('preset33').onclick = ()=> setRule(3,3);
   document.getElementById('preset11').onclick = ()=> setRule(1,1);
@@ -500,7 +450,6 @@
   const session={ p1:null, p2:null, tourM:0, dureeMin:0, rules:{tb:3,fb:3}, active:'p1',
     laps:0, frac:0, shots:[], results:{p1:null,p2:null}, finished:false };
 
-  // Accès course
   qs('#goCourse').onclick = ()=>{
     if(!validate()) { alert('Complétez tous les champs (obligatoires) et vérifiez les nombres.'); return; }
     session.p1={ prenom:val('p1_prenom'), nom:val('p1_nom'), classe:val('p1_classe'), sexe:val('p1_sexe') };
@@ -511,7 +460,6 @@
     session.active='p1'; resetRunnerState(); paintCourseHeader(); show('course');
   };
 
-  // Course
   const clockEl=qs('#clock'), lapsEl=qs('#laps'), lapMetersEl=qs('#lapMeters'), targetEl=qs('#target');
   const shotsTable=qs('#shotsTable'), runnerTitle=qs('#runnerTitle'), courseMeta=qs('#courseMeta');
   const endCard=qs('#endCard'), distanceOut=qs('#distanceOut'), courseCard=qs('#courseCard');
@@ -521,15 +469,12 @@
   const c0El=qs('#c0'), c6El=qs('#c6'), c7El=qs('#c7'), c8El=qs('#c8'), c9El=qs('#c9'), c10El=qs('#c10');
   const adviceTxt = qs('#adviceTxt');
 
-  // Choix coureur
   qs('#pickP1').onclick=()=> switchRunner('p1');
   qs('#pickP2').onclick=()=> switchRunner('p2');
 
-  // Tours
   qs('#lapPlus').onclick=()=>{ if(session.finished) return; session.laps++; renderLaps(); renderAllowances(); };
   qs('#lapMinus').onclick=()=>{ if(session.finished) return; session.laps=Math.max(0,session.laps-1); renderLaps(); renderAllowances(); };
 
-  // Tir
   document.querySelectorAll('#scoreButtons [data-score]').forEach(btn=>{
     btn.onclick=()=>{
       if(session.finished) return;
@@ -537,20 +482,17 @@
       const allowed = calcAllowedShots();
       if(session.shots.length>=allowed){ alert('Pas assez de tours pour tirer plus de flèches.'); return; }
       addShot(score);
-      // Conseil APRES CHAQUE TIR (persiste jusqu'au prochain évènement)
       setAdvice(generateAdvice('shot'));
     };
   });
 
-  // Chrono
   let t0=0, elapsed=0, timer=null, running=false;
   function start(){ if(session.finished||running) return; running=true; t0=Date.now()-elapsed; timer=setInterval(tick,100); qs('#btnStartCourse').disabled=true; qs('#btnPause').disabled=false; qs('#btnReset').disabled=false; }
   function pause(){ if(!running) return; running=false; clearInterval(timer); qs('#btnStartCourse').disabled=false; qs('#btnPause').disabled=true; }
-  function reset(){ pause(); elapsed=0; clockEl.textContent='00:00.0'; qs('#btnReset').disabled=true; session.laps=0; session.shots=[]; session.frac=0; renderLaps(); renderAllowances(); renderShots(); renderAllSummaries(); hideEnd(); /* NE PAS effacer le conseil ici */ }
-  function tick(){ elapsed=Date.now()-t0; const cs=Math.floor(elapsed/100); const m=Math.floor(cs/600), s=Math.floor((cs%600)/10), d=cs%10; clockEl.textContent=`${m<10?'0':''}${m}:${s<10?'0':''}${s}.${d}`; if(m>=session.dureeMin){ pause(); showEnd(); /* Conseil EN FIN DE COURS */ setAdvice(generateAdvice('end')); } }
+  function reset(){ pause(); elapsed=0; clockEl.textContent='00:00.0'; qs('#btnReset').disabled=true; session.laps=0; session.shots=[]; session.frac=0; renderLaps(); renderAllowances(); renderShots(); renderAllSummaries(); hideEnd(); }
+  function tick(){ elapsed=Date.now()-t0; const cs=Math.floor(elapsed/100); const m=Math.floor(cs/600), s=Math.floor((cs%600)/10), d=cs%10; clockEl.textContent=`${m<10?'0':''}${m}:${s<10?'0':''}${s}.${d}`; if(m>=session.dureeMin){ pause(); showEnd(); setAdvice(generateAdvice('end')); } }
   qs('#btnStartCourse').onclick=start; qs('#btnPause').onclick=pause; qs('#btnReset').onclick=reset;
 
-  // Fin (overlay)
   const endOverlay = document.getElementById('endOverlay');
   const distanceOutOverlay = document.getElementById('distanceOutOverlay');
   function updateDistanceOutputOverlay(){
@@ -575,7 +517,6 @@
   });
   document.getElementById('finishRunnerOverlay').onclick=()=> finalizeRunner();
 
-  // Overlay bilan prêt
   const summaryOverlay = document.getElementById('summaryOverlay');
   function showSummaryOverlay(){ if(summaryOverlay){ summaryOverlay.classList.add('show'); if(navigator.vibrate) navigator.vibrate(120); } }
   function hideSummaryOverlay(){ if(summaryOverlay){ summaryOverlay.classList.remove('show'); } }
@@ -584,7 +525,6 @@
   const overlayCloseBtn = document.getElementById('overlayCloseSummary');
   if(overlayCloseBtn) overlayCloseBtn.onclick = ()=> hideSummaryOverlay();
 
-  // Panneau bas
   endCard.querySelectorAll('[data-frac]').forEach(b=> b.onclick=()=>{ if(session.finished) return; session.frac=+b.getAttribute('data-frac'); updateDistanceOutput(); updateDistanceOutputOverlay(); });
   qs('#finishRunner').onclick=()=> { showEnd(); };
 
@@ -599,7 +539,6 @@
     lapMetersEl.textContent=session.tourM;
   }
 
-  // Shots / règles
   function calcAllowedShots(){
     const {tb,fb}=session.rules;
     const blocs = Math.floor(session.laps / tb);
@@ -647,7 +586,6 @@
     indiceArcEl.textContent = computeIndiceArc();
   }
 
-  // === CONSEILS (texte central) ===
   function setAdvice(text){
     adviceTxt.textContent = text && text.trim().length ? text : '— aucun conseil pour le moment —';
   }
@@ -659,18 +597,21 @@
 
     if (context === 'shot' && T > 0) {
       const last = session.shots[session.shots.length-1].score;
-      if (last === 0) tips.push("Reset mental : posture stable, respiration, vise large pour retrouver des points.");
-      if (last >= 9) tips.push("Très bien ! Garde la même routine (ancrage → visée → lâcher).");
-      if (last <= 6) tips.push("Prends un peu plus de temps à l'ancrage et déclenche proprement.");
+      if (last === 0) tips.push("Reset posture, vise large");
+      else if (last <= 6) tips.push("Ancrage plus long, lâcher propre");
+      else if (last >= 9) tips.push("Bien ! garde la routine");
     }
-    if (c[0] >= 2) tips.push("Plusieurs 0 : vérifie sécurité et alignement, vise le jaune sans chercher le centre absolu.");
-    if (c[10] >= Math.max(2, Math.ceil(T*0.4))) tips.push("Beaucoup de 10 : si c'est facile, augmente légèrement la distance la prochaine fois.");
-    if (indice < 60) tips.push("Travaille la stabilité : pieds ancrés, épaules relâchées, traction régulière.");
-    else if (indice < 80) tips.push("C'est en progrès : garde un rythme constant, concentre-toi sur un lâcher propre.");
-    else tips.push("Excellent groupement : reproduis ta routine et pense au suivi de flèche.");
 
-    if (context === 'end') tips.unshift("Fin de course : hydrate-toi, fais un reset et note ce qui a fonctionné.");
-    return tips.join(" ");
+    if (c[0] >= 2) tips.push("Plusieurs 0 : vérifie alignement/sécurité");
+    if (c[10] >= Math.max(2, Math.ceil(T*0.4))) tips.push("Beaucoup de 10 : distance +1 la prochaine fois");
+    if (indice < 60) tips.push("Stabilité : pieds fixes, épaules relâchées");
+    else if (indice < 80) tips.push("Rythme constant, lâcher net");
+    else tips.push("Groupement top, répète la routine");
+
+    if (context === 'end') tips.unshift("Fin : hydrate-toi, note 1 point à garder");
+
+    const maxItems = (context === 'end') ? 3 : 2;
+    return tips.slice(0, maxItems).join(" • ");
   }
 
   function switchRunner(which){
@@ -681,7 +622,8 @@
     resetRunnerState();
     paintCourseHeader();
     loadTemp();
-    // Conseil persistant : on NE l'efface pas ici
+    // Reset du conseil à chaque changement de coureur (évite la fuite)
+    setAdvice('');
   }
   function resetRunnerState(){ session.laps=0; session.shots=[]; session.frac=0; renderLaps(); renderAllowances(); renderShots(); renderAllSummaries(); hideEnd(); }
   function paintCourseHeader(){
@@ -703,10 +645,7 @@
     const indice=computeIndiceArc();
 
     session.results[session.active]={ prenom:R.prenom, nom:R.nom, classe:R.classe, sexe:R.sexe,
-      distance:meters,
-      nb0:c[0], nb6:c[6], nb7:c[7], nb8:c[8], nb9:c[9], nb10:c[10],
-      indice_arc: indice
-    };
+      distance:meters, nb0:c[0], nb6:c[6], nb7:c[7], nb8:c[8], nb9:c[9], nb10:c[10], indice_arc: indice };
 
     hideEnd();
     courseCard.classList.add('lock');
@@ -716,7 +655,7 @@
     if(!session.results[other]){
       setAdvice(generateAdvice('end'));
       alert('Coureur terminé. Passez au second coureur.');
-      switchRunner(other);
+      switchRunner(other); // switch efface le conseil pour le prochain coureur
       return;
     }
     session.finished=true;
@@ -727,7 +666,6 @@
     setAdvice(generateAdvice('end'));
   }
 
-  // Bilan / QR + MODE PROF
   const backToCourseBtn=qs('#backToCourse'); const backHome2Btn=qs('#backHome2'); const goSummaryBtn=qs('#goSummary');
   let summaryData = []; let profMode = false;
 
@@ -848,7 +786,6 @@
     alert('Bilan mis à jour. QR et CSV régénérés.');
   };
 
-  // Aller au bilan
   document.getElementById('goSummary').onclick=()=>{
     const out=[];
     if(session.results.p1) out.push({...session.results.p1});
@@ -862,9 +799,8 @@
   qs('#backToCourse').onclick=()=> show('course');
   qs('#backHome2').onclick=()=> { if(confirmLeaveIfNeeded()) show('cover'); };
 
-  // Init
   validate();
-  setAdvice(''); // init conseil
+  setAdvice('');
   try{ console.assert(!!V.cover && !!V.duo && !!V.course && !!V.summary, 'vues ok'); }catch(_){ }
   </script>
 </body>
